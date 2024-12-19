@@ -1,0 +1,35 @@
+<issues>
+    <issue>
+        <id_issue>1</id_issue>
+        <id_inventory>1</id_inventory>
+        <created_at>18/09/2024</created_at>
+        <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</description>
+        <id_status>1</id_status>
+        <id_user>1</id_user>
+        <id_tecnic>3</id_tecnic>
+        <last_updated>18/09/2024</last_updated>
+        <notes>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</notes>
+    </issue>
+    <issue>
+        <id_issue>2</id_issue>
+        <id_inventory>2</id_inventory>
+        <created_at>18/09/2024</created_at>
+        <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</description>
+        <id_status>3</id_status>
+        <id_user>3</id_user>
+        <id_tecnic>9</id_tecnic>
+        <last_updated>18/09/2024</last_updated>
+        <notes>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</notes>
+    </issue>
+    <issue>
+        <id_issue>3</id_issue>
+        <id_inventory>5</id_inventory>
+        <created_at>18/09/2024</created_at>
+        <description>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</description>
+        <id_status>4</id_status>
+        <id_user>4</id_user>
+        <id_tecnic>8</id_tecnic>
+        <last_updated>18/09/2024</last_updated>
+        <notes>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</notes>
+    </issue>
+</issues>

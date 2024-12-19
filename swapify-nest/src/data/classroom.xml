@@ -1,0 +1,26 @@
+<classrooms>
+    <classroom>
+        <id_classroom>1</id_classroom>
+        <description>piso 1</description>
+    </classroom>
+    <classroom>
+        <id_classroom>2</id_classroom>
+        <description>piso 1</description>
+    </classroom>
+    <classroom>
+        <id_classroom>3</id_classroom>
+        <description>piso 2</description>
+    </classroom>
+    <classroom>
+        <id_classroom>4</id_classroom>
+        <description>piso 2</description>
+    </classroom>
+    <classroom>
+        <id_classroom>5</id_classroom>
+        <description>piso 3</description>
+    </classroom>
+    <classroom>
+        <id_classroom>6</id_classroom>
+        <description>piso 3</description>
+    </classroom>
+</classrooms>

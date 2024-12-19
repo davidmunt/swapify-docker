@@ -1,0 +1,30 @@
+<inventory_types>
+    <inventory_type>
+        <id_type>1</id_type>
+        <description>PC</description>
+    </inventory_type>
+    <inventory_type>
+        <id_type>2</id_type>
+        <description>portatil</description>
+    </inventory_type>
+    <inventory_type>
+        <id_type>3</id_type>
+        <description>switch</description>
+    </inventory_type>
+    <inventory_type>
+        <id_type>4</id_type>
+        <description>pantalla</description>
+    </inventory_type>
+    <inventory_type>
+        <id_type>5</id_type>
+        <description>tablet</description>
+    </inventory_type>
+    <inventory_type>
+        <id_type>6</id_type>
+        <description>proyector</description>
+    </inventory_type>
+    <inventory_type>
+        <id_type>7</id_type>
+        <description>perifericos</description>
+    </inventory_type>
+</inventory_types>

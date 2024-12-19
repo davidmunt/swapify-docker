@@ -1,0 +1,68 @@
+<inventory_list>
+    <inventory>
+        <id_inventory>1</id_inventory>
+        <num_serie>kg273965</num_serie>
+        <id_type>2</id_type>
+        <brand>HP</brand>
+        <model>Pavilion</model>
+        <GVA_cod_article>1</GVA_cod_article>
+        <GVA_description_cod_articulo>portatil para clase</GVA_description_cod_articulo>
+        <status>usando</status>
+        <id_classroom>1</id_classroom>
+    </inventory>
+    <inventory>
+        <id_inventory>2</id_inventory>
+        <num_serie>pl834759</num_serie>
+        <id_type>1</id_type>
+        <brand>Dell</brand>
+        <model>OptiPlex 3070</model>
+        <GVA_cod_article>2</GVA_cod_article>
+        <GVA_description_cod_articulo>PC para oficina</GVA_description_cod_articulo>
+        <status>disponible</status>
+        <id_classroom>2</id_classroom>
+    </inventory>
+    <inventory>
+        <id_inventory>3</id_inventory>
+        <num_serie>qt198273</num_serie>
+        <id_type>3</id_type>
+        <brand>Nintendo</brand>
+        <model>Switch</model>
+        <GVA_cod_article>3</GVA_cod_article>
+        <GVA_description_cod_articulo>Consola para entretenimiento</GVA_description_cod_articulo>
+        <status>reparación</status>
+        <id_classroom>3</id_classroom>
+    </inventory>
+    <inventory>
+        <id_inventory>4</id_inventory>
+        <num_serie>yt648392</num_serie>
+        <id_type>4</id_type>
+        <brand>Samsung</brand>
+        <model>S24F350FHU</model>
+        <GVA_cod_article>4</GVA_cod_article>
+        <GVA_description_cod_articulo>Pantalla para presentaciones</GVA_description_cod_articulo>
+        <status>usando</status>
+        <id_classroom>4</id_classroom>
+    </inventory>
+    <inventory>
+        <id_inventory>5</id_inventory>
+        <num_serie>vx392847</num_serie>
+        <id_type>5</id_type>
+        <brand>Apple</brand>
+        <model>iPad Air</model>
+        <GVA_cod_article>5</GVA_cod_article>
+        <GVA_description_cod_articulo>Tablet para estudiantes</GVA_description_cod_articulo>
+        <status>disponible</status>
+        <id_classroom>1</id_classroom>
+    </inventory>
+    <inventory>
+        <id_inventory>6</id_inventory>
+        <num_serie>hw594837</num_serie>
+        <id_type>6</id_type>
+        <brand>Logitech</brand>
+        <model>MX Master 3</model>
+        <GVA_cod_article>6</GVA_cod_article>
+        <GVA_description_cod_articulo>Ratón para oficina</GVA_description_cod_articulo>
+        <status>usando</status>
+        <id_classroom>5</id_classroom>
+    </inventory>
+</inventory_list>

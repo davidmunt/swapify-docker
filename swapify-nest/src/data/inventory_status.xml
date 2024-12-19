@@ -1,0 +1,18 @@
+<status>
+    <status_item>
+        <id_status>1</id_status>
+        <description>Creada</description>
+    </status_item>
+    <status_item>
+        <id_status>2</id_status>
+        <description>En revision</description>
+    </status_item>
+    <status_item>
+        <id_status>3</id_status>
+        <description>Rechazada</description>
+    </status_item>
+    <status_item>
+        <id_status>3</id_status>
+        <description>Completada</description>
+    </status_item>
+</status>
