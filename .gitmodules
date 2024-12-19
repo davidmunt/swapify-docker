@@ -1,0 +1,3 @@
+[submodule "swapify-nest"]
+	path = swapify-nest
+	url = git@github.com:davidmunt/swapify-nest.git

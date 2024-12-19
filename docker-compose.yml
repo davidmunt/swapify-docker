@@ -1,0 +1,41 @@
+services:
+  web_server:
+    build: .
+    ports:
+      - ${WEB_SERVER_PORT}:3000
+    depends_on:
+      - database
+      - mongodb
+      #- redis
+    container_name: swapify-webserver
+    working_dir: /web
+    command: pm2-runtime start pm2.json
+    volumes:
+      - ./swapify:/web
+    environment:
+      - TZ=Europe/Berlin
+  database:
+    image: yobasystems/alpine-mariadb:10.11.8
+    container_name: swapify-db
+    ports:
+      - "2222:3306"
+    #restart: always
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=Europe/Berlin
+    volumes:
+     - ./data/db/mysql:/var/lib/mysql
+    # - ./mysql.cnf:/etc/mysql/my.cnf
+  mongodb:
+    image: mongo:noble
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - ./data/mongo-data:/data/db
+  #redis: 
+  #  image: 'redis'
+  #  container_name: swapify-redis

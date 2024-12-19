@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@nestjs/mongoose": "^10.1.0",
+    "@types/multer-gridfs-storage": "^4.0.8",
+    "mongoose": "^8.8.3",
+    "multer-gridfs-storage": "^5.0.2"
+  }
+}
