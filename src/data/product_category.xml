@@ -1,0 +1,57 @@
+<product_categories>
+    <product_category>
+        <id_category_product>1</id_category_product>
+        <name>Electronica</name>
+        <description>Categoria para todos los productos electronicos</description>
+    </product_category>
+    <product_category>
+        <id_category_product>2</id_category_product>
+        <name>Libros</name>
+        <description>Categoria para varios generos de libros</description>
+    </product_category>
+    <product_category>
+        <id_category_product>3</id_category_product>
+        <name>Ropa</name>
+        <description>Categoria para todo tipo de ropa</description>
+    </product_category>
+    <product_category>
+        <id_category_product>4</id_category_product>
+        <name>Electrodomesticos</name>
+        <description>Categoria para electrodomesticos de uso en el hogar</description>
+    </product_category>
+    <product_category>
+        <id_category_product>5</id_category_product>
+        <name>Juguetes</name>
+        <description>Categoria para juguetes y juegos para todas las edades</description>
+    </product_category>
+    <product_category>
+        <id_category_product>6</id_category_product>
+        <name>Equipamiento Deportivo</name>
+        <description>Categoria para equipo y accesorios de diversos deportes</description>
+    </product_category>
+    <product_category>
+        <id_category_product>7</id_category_product>
+        <name>Salud y Belleza</name>
+        <description>Categoria para productos de salud y belleza</description>
+    </product_category>
+    <product_category>
+        <id_category_product>8</id_category_product>
+        <name>Muebles</name>
+        <description>Categoria para muebles y decoracion del hogar</description>
+    </product_category>
+    <product_category>
+        <id_category_product>9</id_category_product>
+        <name>Automotriz</name>
+        <description>Categoria para piezas y accesorios automotrices</description>
+    </product_category>
+    <product_category>
+        <id_category_product>10</id_category_product>
+        <name>Mascotas</name>
+        <description>Categoria para productos y accesorios para mascotas</description>
+    </product_category>
+    <product_category>
+        <id_category_product>11</id_category_product>
+        <name>Otras</name>
+        <description>Categoria para productos que no estan en las categorias anteriores</description>
+    </product_category>
+</product_categories>

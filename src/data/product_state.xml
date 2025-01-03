@@ -1,0 +1,22 @@
+<product_states>
+    <product_state>
+        <id_state_product>1</id_state_product>
+        <name>Nuevo</name>
+        <description>Este producto es nuevo</description>
+    </product_state>
+    <product_state>
+        <id_state_product>2</id_state_product>
+        <name>En perfecto estado</name>
+        <description>Este producto ha sido usado, pero esta en un muy buen estado</description>
+    </product_state>
+    <product_state>
+        <id_state_product>3</id_state_product>
+        <name>Usado</name>
+        <description>Este producto ha sido usado bastante y el estado no es prefecto</description>
+    </product_state>
+    <product_state>
+        <id_state_product>4</id_state_product>
+        <name>Mal estado</name>
+        <description>Este producto ha sido usado mucho y el estado del producto es muy malo</description>
+    </product_state>
+</product_states>

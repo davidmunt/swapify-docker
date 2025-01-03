@@ -1,0 +1,22 @@
+<product_sale_states>
+    <product_sale_state>
+        <id_sale_state_product>1</id_sale_state_product>
+        <name>En venta</name>
+        <description>Este producto esta a la venta y todos los usuarios lo pueden ver</description>
+    </product_sale_state>
+    <product_sale_state>
+        <id_sale_state_product>2</id_sale_state_product>
+        <name>Oculto</name>
+        <description>Este producto esta a la venta pero solo el usuario dueño lo puede ver</description>
+    </product_sale_state>
+    <product_sale_state>
+        <id_sale_state_product>3</id_sale_state_product>
+        <name>Reservado</name>
+        <description>Este producto ha sido reservado para un usuario, no estara a la vista del resto de usuarios</description>
+    </product_sale_state>
+    <product_sale_state>
+        <id_sale_state_product>4</id_sale_state_product>
+        <name>Vendido</name>
+        <description>Este producto ha sido comprado por un usuario, estara a la vista del usuario comprador y el usuario dueño</description>
+    </product_sale_state>
+</product_sale_states>
