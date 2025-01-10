@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductModule } from './product/product.module';
+import { ProductLikeModule } from './product_like/product_like.module';
 import { ProductCategoryModule } from './product_cathegories/product_category.module';
 import { ProductStateModule } from './product_state/product_state.module';
 import { ProductSaleStateModule } from './product_sale_state/product_sale_state.module';
@@ -19,13 +20,16 @@ import { ProductState } from './product_state/product_state.entity';
 import { ProductSaleState } from './product_sale_state/product_sale_state.entity';
 import { UploadEntity } from './upload/upload.entity';
 import { Product } from './product/product.entity';
+import { ProductLike } from './product_like/product_like.entity';
 import { User } from './user/user.entity';
 import { ProductController } from './product/product.controller';
+import { ProductLikeController } from './product_like/product_like.controller';
 import { ProductCategoryController } from './product_cathegories/product_category.controller';
 import { ProductStateController } from './product_state/product_state.controller';
 import { ProductSaleStateController } from './product_sale_state/product_sale_state.controller';
 import { ProductService } from './product/product.service';
 import { ProductCategoryService } from './product_cathegories/product_category.service';
+import { ProductLikeService } from './product_like/product_like.service';
 import { ProductStateService } from './product_state/product_state.service';
 import { ProductSaleStateService } from './product_sale_state/product_sale_state.service';
 
@@ -46,6 +50,7 @@ import { ProductSaleStateService } from './product_sale_state/product_sale_state
     ProductCategoryModule,
     UtilsModule,
     UploadModule,
+    ProductLikeModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -66,14 +71,15 @@ import { ProductSaleStateService } from './product_sale_state/product_sale_state
           Product,
           ProductCategory,
           UploadEntity,
+          ProductLike,
         ],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
   ],
-  controllers: [UserController, ProductCategoryController, ProductStateController, ProductSaleStateController, ProductController],
-  providers: [UserService, ProductCategoryService, ProductStateService, ProductSaleStateService, ProductService],
+  controllers: [UserController, ProductCategoryController, ProductStateController, ProductSaleStateController, ProductController, ProductLikeController],
+  providers: [UserService, ProductCategoryService, ProductStateService, ProductSaleStateService, ProductService, ProductLikeService],
 })
 export class AppModule {
 }

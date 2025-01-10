@@ -4,6 +4,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { GridFsMulterConfigService } from './multer-config.service';
 import { FilesService } from '././files.service';
 import { UserModule } from '../user/user.module';
+import { ProductModule } from '../product/product.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { UserModule } from '../user/user.module';
       useClass: GridFsMulterConfigService,
     }),
     UserModule,
+    ProductModule,
   ],
   controllers: [FilesController],
   providers: [GridFsMulterConfigService, FilesService],

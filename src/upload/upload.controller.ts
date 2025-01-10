@@ -10,9 +10,10 @@ import {
   Put,
   Res,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from "../multer.config";
 import { UploadService } from './upload.service';
 import { UserService } from '../user/user.service';
@@ -39,9 +40,47 @@ export class UploadController {
     const savedFile = await this.uploadService.saveFile(file, id_user);
     await this.userService.vincularArchivo(id_user, savedFile.id);
     return {
-      message: 'Archivo añadido con exito',
-      fileId: savedFile.id, 
+      message: 'Archivo añadido con éxito',
+      fileId: savedFile.id,
       url: `/upload/${file.filename}`,
+    };
+  }
+
+  @Post('product')
+  @UseInterceptors(FilesInterceptor('file', 10, multerConfig))
+  async uploadProductImages(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body('product') id_product: string,
+  ) {
+    if (!files || files.length === 0) {
+      throw new HttpException('No se han enviado archivos', HttpStatus.BAD_REQUEST);
+    }
+
+    const savedFiles = await Promise.all(
+      files.map(file => this.uploadService.saveFileForProduct(file, parseInt(id_product))),
+    );
+
+    return {
+      message: 'Imágenes añadidas con éxito',
+      files: savedFiles.map(file => ({
+        fileId: file.id,
+        url: file.path,
+      })),
+    };
+  }
+
+  @Put('product')
+  @UseInterceptors(FilesInterceptor('file', 10, multerConfig))
+  async replaceProductImages(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Body('product') id_product: string,
+  ) {
+    if (!files || files.length === 0) {
+      throw new HttpException('No se han enviado archivos', HttpStatus.BAD_REQUEST);
+    }
+    await this.uploadService.replaceProductImages(parseInt(id_product), files);
+    return {
+      message: 'Imagenes reemplazadas con exito',
     };
   }
 
@@ -71,10 +110,7 @@ export class UploadController {
     @UploadedFile() file: Express.Multer.File,
   ): Promise<any> {
     if (!file) {
-      throw new HttpException(
-        'No se ha enviado un archivo',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException('No se ha enviado un archivo', HttpStatus.BAD_REQUEST);
     }
     return await this.uploadService.updateUpload(id, file);
   }

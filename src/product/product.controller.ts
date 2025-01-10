@@ -11,48 +11,50 @@ import {
     Query,
   } from '@nestjs/common';
   import { ProductService } from './product.service';
+  import { CreateProductDto, UpdateProductDto } from './product.dto';
+  import { FilesInterceptor } from '@nestjs/platform-express';
+import { UseInterceptors, UploadedFiles } from '@nestjs/common';
   
-  @Controller('product')
-  export class ProductController {
-    private ProductService: ProductService;
-    constructor(ProductService: ProductService) {
-      this.ProductService = ProductService;
-    }
+@Controller('product')
+export class ProductController {
+    constructor(private readonly productService: ProductService) {}
+  
     @Get()
-    getAllStatus(@Query('xml') xml?: string) {
-      try {
-        return this.ProductService.getAllProducts(xml);
-      } catch (err) {
-        throw new HttpException(
-          {
-            status: HttpStatus.INTERNAL_SERVER_ERROR,
-            error: err,
-          },
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          {
-            cause: err,
-          },
-        );
-      }
+    async getAllProducts(@Query('xml') xml?: string) {
+        return await this.productService.getAllProducts(xml);
     }
-  
+
     @Post()
-    createIssue(@Body() Issue) {
-      return this.ProductService.createProduct(Issue);
+    async createProduct(@Body() createProductDto: CreateProductDto) {
+        return await this.productService.createProduct(createProductDto);
     }
   
+    // @Get(':id')
+    // async getProduct(@Param('id') id: string, @Query('xml') xml?: string) {
+    //     return await this.productService.getProduct(parseInt(id), xml);
+    // }
+
     @Get(':id')
-    getIssue(@Param('id') id: string, @Query('xml') xml?: string) {
-      return this.ProductService.getProduct(parseInt(id), xml);
+    async getProduct(@Param('id') id: string, @Query('xml') xml?: string) {
+        const product = await this.productService.getProduct(parseInt(id), xml);
+        if (!product) {
+            throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
+        }
+        return product;
     }
   
     @Put(':id')
-    updateIssue(@Param('id') id: string, @Body() Issue) {
-      return this.ProductService.updateProduct(parseInt(id), Issue);
+    async updateProduct(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+        return await this.productService.updateProduct(parseInt(id), updateProductDto);
     }
   
     @Delete(':id')
-    deleteIssue(@Param('id') id: string) {
-      return this.ProductService.deleteProduct(parseInt(id));
+    async deleteProduct(@Param('id') id: string) {
+        return await this.productService.deleteProduct(parseInt(id));
     }
-  }
+
+    @Post('buy')
+    async buyProduct(@Body('productId') productId: number, @Body('buyerId') buyerId: string) {
+        return this.productService.buyProduct(productId, buyerId);
+    }
+}

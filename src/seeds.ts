@@ -10,6 +10,7 @@ import { UploadEntity } from './upload/upload.entity';
 import { ProductStateSeeder } from './db/seeding/seeds/product_state.seeds';
 import { ProductSaleStateSeeder } from './db/seeding/seeds/product_sale_state.seeds';
 import { ProductState } from './product_state/product_state.entity';
+import { ProductLike } from './product_like/product_like.entity';
 import { ProductSaleState } from './product_sale_state/product_sale_state.entity';
 config();
 
@@ -28,6 +29,7 @@ const options: DataSourceOptions & SeederOptions = {
     Product,
     User,
     UploadEntity,
+    ProductLike,
   ],
   seeds: [
     ProductCategorySeeder,

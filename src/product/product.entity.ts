@@ -2,6 +2,8 @@ import { ProductCategory } from '../product_cathegories/product_category.entity'
 import { ProductSaleState } from '../product_sale_state/product_sale_state.entity';
 import { ProductState } from '../product_state/product_state.entity';
 import { User } from '../user/user.entity';
+import { ProductLike } from '../product_like/product_like.entity';
+import { UploadEntity } from '../upload/upload.entity';
 import {
     Entity,
     Column,
@@ -10,8 +12,9 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     ManyToOne,
+    OneToMany,
 } from 'typeorm';
-  
+
 @Entity()
 export class Product {
   @PrimaryGeneratedColumn()
@@ -23,7 +26,7 @@ export class Product {
   @Column()
   product_brand: string;
 
-  @Column()
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
 
   @Column()
@@ -59,5 +62,11 @@ export class Product {
   @ManyToOne(() => User, (user) => user.products)
   @JoinColumn({ name: 'id_user' })
   user: User;
+
+  @OneToMany(() => UploadEntity, (upload) => upload.product, { cascade: true })
+  images: UploadEntity[];
+
+  @OneToMany(() => ProductLike, (like) => like.product)
+  likes: ProductLike[];
 }
   

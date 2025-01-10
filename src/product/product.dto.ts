@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional, IsNotEmpty } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsNotEmpty, IsArray } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -28,34 +28,54 @@ export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
   name_city_created: string;
+
+  @IsString()
+  @IsNotEmpty()
+  user_id: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  id_category_product: number; 
+
+  @IsNumber()
+  @IsNotEmpty()
+  id_state_product: number; 
 }
 
 export class UpdateProductDto {
   @IsString()
   @IsOptional()
-  product_model: string;
+  product_model?: string;
 
   @IsString()
   @IsOptional()
-  product_brand: string;
+  product_brand?: string;
 
   @IsNumber()
   @IsOptional()
-  price: number;
+  price?: number;
 
   @IsString()
   @IsOptional()
-  description: string;
+  description?: string;
 
   @IsNumber()
   @IsOptional()
-  latitude_created: number;
+  latitude_created?: number;
 
   @IsNumber()
   @IsOptional()
-  longitude_created: number;
+  longitude_created?: number;
 
   @IsString()
   @IsOptional()
-  name_city_created: string;
+  name_city_created?: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  id_category_product: number; 
+
+  @IsNumber()
+  @IsNotEmpty()
+  id_state_product: number; 
 }

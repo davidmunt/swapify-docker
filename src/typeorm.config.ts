@@ -3,6 +3,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
 import { ProductCategory } from './product_cathegories/product_category.entity';
 import { Product } from './product/product.entity';
+import { ProductLike } from './product_like/product_like.entity';
 import { User } from './user/user.entity';
 import { UploadEntity } from './upload/upload.entity';
 import { ProductState } from './product_state/product_state.entity';
@@ -23,6 +24,7 @@ const config = {
     User,
     UploadEntity,
     Product,
+    ProductLike,
     ProductCategory,
   ],
   migrations: ['./src/migrations/*.ts'],

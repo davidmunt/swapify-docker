@@ -16,13 +16,13 @@ export class GridFsMulterConfigService implements MulterOptionsFactory {
       url: url,
       file: (_req, file) => {
         return new Promise((resolve, _reject) => {
-          const filename = file.originalname.trim();
-          const fileInfo = {
-            filename: filename,
-          };
-          resolve(fileInfo);
+            const filename = `${Date.now()}-${file.originalname}`;
+            const fileInfo = {
+                filename: filename,
+            };
+            resolve(fileInfo);
         });
-      },
+      }    
     });
   }
 

@@ -6,6 +6,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from '../user/user.entity';
+import { Product } from '../product/product.entity';
 
 @Entity('upload')
 export class UploadEntity {
@@ -17,6 +18,10 @@ export class UploadEntity {
 
   @Column()
   name: string;
+
+  @ManyToOne(() => Product, (product) => product.images, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'id_product' })
+  product: Product;
 
   @ManyToOne(
     () => User,

@@ -67,5 +67,5 @@ export class UserService {
     }
     user.avatar_id = id_archivo;
     return this.usersRepository.save(user);
-  }  
+  }   
 }

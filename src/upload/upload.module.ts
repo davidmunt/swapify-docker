@@ -6,11 +6,12 @@ import { UploadEntity } from './upload.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as path from 'path';
 import { User } from '../user/user.entity';
+import { Product } from '../product/product.entity';
 import { UserModule } from 'src/user/user.module';
 @Module({
   imports: [
     forwardRef(() => UserModule),
-    TypeOrmModule.forFeature([UploadEntity, User]),
+    TypeOrmModule.forFeature([UploadEntity, User, Product]),
   ],
   providers: [UploadService],
   controllers: [UploadController],

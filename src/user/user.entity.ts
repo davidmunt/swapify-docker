@@ -1,5 +1,6 @@
 import { UploadEntity } from '../upload/upload.entity';
 import { Product } from '../product/product.entity';
+import { ProductLike } from '../product_like/product_like.entity';
 import {
   Entity,
   Column,
@@ -18,15 +19,16 @@ export class User {
   @Column()
   surname: string;
 
-  @Column()
-  @Column('bigint')
+  @Column('bigint') 
   telNumber: number;
 
   @Column({ unique: true })
   email: string;
 
-  @Column()
-  @Column({ nullable: true })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 }) 
+  balance: number;
+
+  @Column({ nullable: true }) 
   avatar_id: number | null;
 
   @Column()
@@ -37,4 +39,7 @@ export class User {
 
   @OneToMany(() => Product, (product) => product.user)
   products: Product[];
+
+  @OneToMany(() => ProductLike, (like) => like.user)
+  likes: ProductLike[];
 }
