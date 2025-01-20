@@ -29,7 +29,7 @@ export class ProductService {
   async getProduct(id: number, xml?: string): Promise<Product | string> {
     const product = await this.productRepository.findOne({
       where: { id_product: id },
-      relations: ['user', 'product_category', 'product_state', 'images'],
+      relations: ['user', 'product_category', 'product_state', 'images', 'likes', 'likes.user'],
     });
     if (!product) {
       throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
@@ -38,9 +38,60 @@ export class ProductService {
       const jsonForXml = JSON.stringify(product);
       return this.UtilsService.convertJSONtoXML(jsonForXml);
     }
-  
     return product;
   }
+
+  async getFilteredProducts(filters: any): Promise<Product[]> {
+    const allProducts = await this.productRepository.find({
+      relations: ['user', 'product_category', 'product_state', 'images', 'likes', 'likes.user'],
+    });
+    let filteredProducts = allProducts;
+    if (filters.busqueda) {
+      const lowerBusqueda = filters.busqueda.toLowerCase();
+      filteredProducts = filteredProducts.filter(
+        (product) =>
+          product.product_model.toLowerCase().includes(lowerBusqueda) ||
+          product.product_brand.toLowerCase().includes(lowerBusqueda) ||
+          product.description.toLowerCase().includes(lowerBusqueda),
+      );
+    }
+    if (filters.precioMax) {
+      const maxPrice = parseFloat(filters.precioMax);
+      filteredProducts = filteredProducts.filter((product) => parseFloat(product.price.toString()) <= maxPrice);
+    }
+    if (filters.precioMin) {
+      const minPrice = parseFloat(filters.precioMin);
+      filteredProducts = filteredProducts.filter((product) => parseFloat(product.price.toString()) >= minPrice);
+    }
+    if (filters.categoriaProd) {
+      const categoriaId = parseInt(filters.categoriaProd, 10);
+      filteredProducts = filteredProducts.filter((product) => product.product_category.id_category_product === categoriaId);
+    }
+    if (filters.proximidad) {
+      if (!filters.latitud_usuario || !filters.longitud_usuario) {
+        throw new HttpException('latitud_usuario y longitud_usuario son requeridos para el filtro de proximidad', HttpStatus.BAD_REQUEST,);
+      }
+      const userLat = parseFloat(filters.latitud_usuario);
+      const userLon = parseFloat(filters.longitud_usuario);
+      const maxDistanceKm = parseFloat(filters.proximidad);
+      filteredProducts = filteredProducts.filter((product) => {
+        const productLat = parseFloat(product.latitude_created.toString());
+        const productLon = parseFloat(product.longitude_created.toString());
+        const R = 6371; 
+        const dLat = (productLat - userLat) * (Math.PI / 180);
+        const dLon = (productLon - userLon) * (Math.PI / 180);
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(userLat * (Math.PI / 180)) *
+            Math.cos(productLat * (Math.PI / 180)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+        return distance <= maxDistanceKm;
+      });
+    }
+    return filteredProducts;
+  }  
 
   async createProduct(createProductDto: CreateProductDto): Promise<Product> {
     const user = await this.userRepository.findOne({

@@ -24,16 +24,6 @@ export class ProductController {
         return await this.productService.getAllProducts(xml);
     }
 
-    @Post()
-    async createProduct(@Body() createProductDto: CreateProductDto) {
-        return await this.productService.createProduct(createProductDto);
-    }
-  
-    // @Get(':id')
-    // async getProduct(@Param('id') id: string, @Query('xml') xml?: string) {
-    //     return await this.productService.getProduct(parseInt(id), xml);
-    // }
-
     @Get(':id')
     async getProduct(@Param('id') id: string, @Query('xml') xml?: string) {
         const product = await this.productService.getProduct(parseInt(id), xml);
@@ -41,6 +31,16 @@ export class ProductController {
             throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
         }
         return product;
+    }
+
+    @Post('filters')
+    async getFilteredProducts(@Body() filters: any) {
+        return await this.productService.getFilteredProducts(filters);
+    }
+
+    @Post()
+    async createProduct(@Body() createProductDto: CreateProductDto) {
+        return await this.productService.createProduct(createProductDto);
     }
   
     @Put(':id')
