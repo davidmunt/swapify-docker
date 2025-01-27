@@ -35,6 +35,18 @@ export class UploadService {
     return await this.uploadRepository.save(newUpload);
   }
 
+  async saveFileMessage(file: Express.Multer.File) {
+    if (!file.filename) {
+      throw new Error('El nombre del archivo no está definido.');
+    }
+    const filePath = `/upload/${file.filename}`; 
+    const newUpload = this.uploadRepository.create({
+      path: filePath,
+      name: file.originalname,
+    });
+    return await this.uploadRepository.save(newUpload);
+  }
+
   async saveFileForProduct(file: Express.Multer.File, id_product: number) {
     const product = await this.productRepository.findOne({ where: { id_product } });
     if (!product) {

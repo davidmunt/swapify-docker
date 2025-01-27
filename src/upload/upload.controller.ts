@@ -46,6 +46,16 @@ export class UploadController {
     };
   }
 
+  @Post('chat')
+  @UseInterceptors(FileInterceptor('file', multerConfig))
+  async uploadChatImages(@UploadedFile() file: Express.Multer.File,) {
+    if (!file) {
+      throw new HttpException('File upload failed', HttpStatus.BAD_REQUEST);
+    }
+    const uploadedFiles = await this.uploadService.saveFileMessage(file);
+    return { message: 'Imágenes del chat subidas correctamente', files: uploadedFiles };
+  }
+
   @Post('product')
   @UseInterceptors(FilesInterceptor('file', 10, multerConfig))
   async uploadProductImages(
@@ -55,11 +65,9 @@ export class UploadController {
     if (!files || files.length === 0) {
       throw new HttpException('No se han enviado archivos', HttpStatus.BAD_REQUEST);
     }
-
     const savedFiles = await Promise.all(
       files.map(file => this.uploadService.saveFileForProduct(file, parseInt(id_product))),
     );
-
     return {
       message: 'Imágenes añadidas con éxito',
       files: savedFiles.map(file => ({
