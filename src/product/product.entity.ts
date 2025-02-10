@@ -47,21 +47,25 @@ export class Product {
   @UpdateDateColumn({ type: 'timestamp' })
   last_updated: Date;
 
-  @ManyToOne(() => ProductCategory, (product_category) => product_category.products)
+  @ManyToOne(() => ProductCategory, (product_category) => product_category.products, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_category_product' })
   product_category: ProductCategory;
 
-  @ManyToOne(() => ProductSaleState, (product_sale_state) => product_sale_state.products)
+  @ManyToOne(() => ProductSaleState, (product_sale_state) => product_sale_state.products, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_sale_state_product' })
   product_sale_state: ProductSaleState;
 
-  @ManyToOne(() => ProductState, (product_state) => product_state.products)
+  @ManyToOne(() => ProductState, (product_state) => product_state.products, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_state_product' })
   product_state: ProductState;
 
-  @ManyToOne(() => User, (user) => user.products)
+  @ManyToOne(() => User, (user) => user.products, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_user' })
   user: User;
+
+  @ManyToOne(() => User, (user) => user.buyerProducts, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'id_buyer' })
+  buyer: User;
 
   @OneToMany(() => UploadEntity, (upload) => upload.product, { cascade: true })
   images: UploadEntity[];

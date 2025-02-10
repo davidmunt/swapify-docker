@@ -8,19 +8,22 @@ import {
   Param,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
 import { ProductStateService } from './product_state.service';
 import { CreateProductStateDto, UpdateProductStateDto } from './product_state.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Product State')
 @Controller('product_state')
 export class ProductStateController {
   constructor(private readonly productStateService: ProductStateService) {}
 
   @Get()
-  async getAllProductState(@Query('xml') xml?: string) {
+  @ApiOperation({ summary: 'Obtener todos los estados de productos' })
+  @ApiResponse({ status: 200, description: 'Lista de estados de productos obtenida exitosamente' })
+  async getAllProductState() {
     try {
-      return this.productStateService.getAllProductState(xml);
+      return this.productStateService.getAllProductState();
     } catch (err) {
       throw new HttpException(
         {
@@ -33,16 +36,22 @@ export class ProductStateController {
   }
 
   @Get(':id')
-  async getProductState(@Param('id') id: string, @Query('xml') xml?: string) {
-    return this.productStateService.getProductState(parseInt(id), xml);
+  @ApiOperation({ summary: 'Obtener un estado de producto por ID' })
+  @ApiResponse({ status: 200, description: 'Estado de producto obtenido exitosamente' })
+  async getProductState(@Param('id') id: string) {
+    return this.productStateService.getProductState(parseInt(id));
   }
 
   @Post()
+  @ApiOperation({ summary: 'Crear un nuevo estado de producto' })
+  @ApiResponse({ status: 201, description: 'Estado de producto creado exitosamente' })
   async createProductState(@Body() createProductStateDto: CreateProductStateDto) {
     return this.productStateService.createProductState(createProductStateDto);
   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'Actualizar un estado de producto por ID' })
+  @ApiResponse({ status: 200, description: 'Estado de producto actualizado exitosamente' })
   async updateProductState(
     @Param('id') id: string,
     @Body() updateProductStateDto: UpdateProductStateDto,
@@ -51,6 +60,8 @@ export class ProductStateController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Eliminar un estado de producto por ID' })
+  @ApiResponse({ status: 200, description: 'Estado de producto eliminado exitosamente' })
   async deleteProductState(@Param('id') id: string) {
     return this.productStateService.deleteProductState(parseInt(id));
   }

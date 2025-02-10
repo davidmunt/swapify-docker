@@ -52,7 +52,6 @@ export class UploadService {
     if (!product) {
       throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
     }
-  
     const filePath = `/upload/${file.filename}`;
     const newUpload = this.uploadRepository.create({
       path: filePath,
@@ -86,6 +85,14 @@ export class UploadService {
       });
       await this.uploadRepository.save(newImage);
     }
+  }  
+
+  async saveQRFile(filename: string, filePath: string) {
+    const newUpload = this.uploadRepository.create({
+      name: filename,
+      path: filePath, 
+    });
+    return await this.uploadRepository.save(newUpload);
   }  
   
   async getAlluploads(): Promise<any> {

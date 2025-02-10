@@ -20,7 +20,10 @@ import { UserService } from '../user/user.service';
 import { Response } from 'express';
 import * as path from 'path';
 import * as fs from 'fs';
+import * as QRCode from 'qrcode';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Upload')
 @Controller('upload')
 export class UploadController {
   constructor(
@@ -30,6 +33,8 @@ export class UploadController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file', multerConfig))
+  @ApiOperation({ summary: 'Subir un archivo' })
+  @ApiResponse({ status: 201, description: 'Archivo subido exitosamente' })
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Body('id_user') id_user: string,
@@ -48,16 +53,20 @@ export class UploadController {
 
   @Post('chat')
   @UseInterceptors(FileInterceptor('file', multerConfig))
-  async uploadChatImages(@UploadedFile() file: Express.Multer.File,) {
+  @ApiOperation({ summary: 'Subir imagen de chat' })
+  @ApiResponse({ status: 201, description: 'Imagen subida correctamente' })
+  async uploadChatImages(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new HttpException('File upload failed', HttpStatus.BAD_REQUEST);
     }
     const uploadedFiles = await this.uploadService.saveFileMessage(file);
-    return { message: 'Imágenes del chat subidas correctamente', files: uploadedFiles };
+    return { message: 'Imagenes del chat subidas correctamente', files: uploadedFiles };
   }
 
   @Post('product')
   @UseInterceptors(FilesInterceptor('file', 10, multerConfig))
+  @ApiOperation({ summary: 'Subir imagenes de producto' })
+  @ApiResponse({ status: 201, description: 'Imagenes añadidas con exito' })
   async uploadProductImages(
     @UploadedFiles() files: Express.Multer.File[],
     @Body('product') id_product: string,
@@ -69,7 +78,7 @@ export class UploadController {
       files.map(file => this.uploadService.saveFileForProduct(file, parseInt(id_product))),
     );
     return {
-      message: 'Imágenes añadidas con éxito',
+      message: 'Imagenes añadidas con exito',
       files: savedFiles.map(file => ({
         fileId: file.id,
         url: file.path,
@@ -79,6 +88,8 @@ export class UploadController {
 
   @Put('product')
   @UseInterceptors(FilesInterceptor('file', 10, multerConfig))
+  @ApiOperation({ summary: 'Reemplazar imagenes de un producto' })
+  @ApiResponse({ status: 200, description: 'Imagenes reemplazadas con exito' })
   async replaceProductImages(
     @UploadedFiles() files: Express.Multer.File[],
     @Body('product') id_product: string,
@@ -88,11 +99,46 @@ export class UploadController {
     }
     await this.uploadService.replaceProductImages(parseInt(id_product), files);
     return {
-      message: 'Imagenes reemplazadas con exito',
+      message: 'Imagenes reemplazadas con éxito',
     };
   }
 
+  @Post('generate-qr')
+  @ApiOperation({ summary: 'Generar un código QR' })
+  @ApiResponse({ status: 201, description: 'Código QR generado correctamente' })
+  async generateQRCode(@Body() body: { productId: number; userId: string }) {
+    const { productId, userId } = body;
+    if (!productId || !userId) {
+      throw new HttpException('Falta por enviar datos', HttpStatus.BAD_REQUEST);
+    }
+    const qrData = JSON.stringify({ productId, userId });
+    const uploadDir = path.join(__dirname, '..', 'upload', 'img');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    const qrFilename = `qr-${productId}-${userId}-${Date.now()}.png`;
+    const qrPath = path.join(uploadDir, qrFilename);
+    try {
+      await QRCode.toFile(qrPath, qrData, {
+        type: 'png',
+        width: 300,
+      });
+      const savedQR = await this.uploadService.saveQRFile(qrFilename, `/upload/img/${qrFilename}`);
+      return {
+        message: 'Codigo QR generado correctamente',
+        qrPath: savedQR.path,
+      };
+    } catch (error) {
+      throw new HttpException(
+        `Error al generar el código QR: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Get('filename/:filename')
+  @ApiOperation({ summary: 'Obtener archivo por nombre' })
+  @ApiResponse({ status: 200, description: 'Archivo encontrado' })
   getFileByName(@Param('filename') filename: string, @Res() res: Response) {
     const filePath = path.join(__dirname, '..', 'upload', 'img', filename);
     if (!fs.existsSync(filePath)) {
@@ -101,18 +147,35 @@ export class UploadController {
     return res.sendFile(filePath);
   }
 
+  @Get('img/:filename')
+  @ApiOperation({ summary: 'Obtener imagen QR por nombre' })
+  @ApiResponse({ status: 200, description: 'Imagen QR encontrada' })
+  getQRCodeImage(@Param('filename') filename: string, @Res() res: Response) {
+    const filePath = path.join(__dirname, '..', 'upload', 'img', filename);
+    if (!fs.existsSync(filePath)) {
+      throw new HttpException('Archivo no encontrado', HttpStatus.NOT_FOUND);
+    }
+    return res.sendFile(filePath);
+  }
+
   @Get()
+  @ApiOperation({ summary: 'Obtener todas las subidas' })
+  @ApiResponse({ status: 200, description: 'Lista de archivos subida con éxito' })
   getAlluploads() {
     return this.uploadService.getAlluploads();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Obtener una subida por ID' })
+  @ApiResponse({ status: 200, description: 'Archivo obtenido exitosamente' })
   getUpload(@Param('id') id: string) {
     return this.uploadService.getUpload(parseInt(id));
   }
 
   @Put(':id')
   @UseInterceptors(FileInterceptor('uploadedFile', multerConfig))
+  @ApiOperation({ summary: 'Actualizar un archivo subido' })
+  @ApiResponse({ status: 200, description: 'Archivo actualizado con éxito' })
   async updateUpload(
     @Param('id') id: number,
     @UploadedFile() file: Express.Multer.File,
@@ -124,6 +187,8 @@ export class UploadController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Eliminar un archivo subido por ID' })
+  @ApiResponse({ status: 200, description: 'Archivo eliminado exitosamente' })
   deleteInventari(@Param('id') id: string) {
     return this.uploadService.deleteUpload(parseInt(id));
   }

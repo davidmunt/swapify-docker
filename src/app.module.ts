@@ -5,8 +5,7 @@ import {
 import { UserModule } from './user/user.module';
 import { UploadModule } from './upload/upload.module';
 import { UserController } from './user/user.controller';
-import { UserService } from './user/user.service'; 
-import { UtilsModule } from './utils/utils.module';
+import { UserService } from './user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -32,6 +31,11 @@ import { ProductCategoryService } from './product_cathegories/product_category.s
 import { ProductLikeService } from './product_like/product_like.service';
 import { ProductStateService } from './product_state/product_state.service';
 import { ProductSaleStateService } from './product_sale_state/product_sale_state.service';
+import { NotificationModule } from './notification/notification.module';
+import { NotificationService } from './notification/notification.service';
+import { MessageModule } from './message/message.module';
+import { MessageController } from './message/message.controller';
+import { MessageService } from './message/message.service';
 
 @Module({
   imports: [
@@ -48,9 +52,10 @@ import { ProductSaleStateService } from './product_sale_state/product_sale_state
     UserModule,
     ProductModule,
     ProductCategoryModule,
-    UtilsModule,
     UploadModule,
+    NotificationModule,
     ProductLikeModule,
+    MessageModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -78,8 +83,8 @@ import { ProductSaleStateService } from './product_sale_state/product_sale_state
       inject: [ConfigService],
     }),
   ],
-  controllers: [UserController, ProductCategoryController, ProductStateController, ProductSaleStateController, ProductController, ProductLikeController],
-  providers: [UserService, ProductCategoryService, ProductStateService, ProductSaleStateService, ProductService, ProductLikeService],
+  controllers: [UserController, ProductCategoryController, ProductStateController, ProductSaleStateController, ProductController, ProductLikeController, MessageController],
+  providers: [UserService, ProductCategoryService, ProductStateService, ProductSaleStateService, ProductService, ProductLikeService, NotificationService, MessageService],
 })
 export class AppModule {
 }

@@ -67,11 +67,7 @@ export class FilesService {
               throw new Error('El JSON no contiene un array válido.');
             }
             const secondElement = data[1];
-            if (
-              secondElement &&
-              secondElement.values &&
-              secondElement.values.serial_number
-            ) {
+            if (secondElement && secondElement.values && secondElement.values.serial_number) {
               resolve(secondElement.values.serial_number);
             } else {
               console.warn('El segundo elemento no contiene "serial_number".');

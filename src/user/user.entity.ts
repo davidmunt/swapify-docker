@@ -34,12 +34,18 @@ export class User {
   @Column()
   dateBirth: Date; 
 
-  @OneToMany(() => UploadEntity, (upload) => upload.user)
+  @Column({ nullable: true }) 
+  tokenNotifications?: string;
+
+  @OneToMany(() => UploadEntity, (upload) => upload.user, { onDelete: 'CASCADE' })
   upload: UploadEntity[];
 
-  @OneToMany(() => Product, (product) => product.user)
+  @OneToMany(() => Product, (product) => product.user, { onDelete: 'CASCADE' })
   products: Product[];
 
-  @OneToMany(() => ProductLike, (like) => like.user)
+  @OneToMany(() => Product, (product) => product.buyer, { onDelete: 'CASCADE' })
+  buyerProducts: Product[];
+
+  @OneToMany(() => ProductLike, (like) => like.user, { onDelete: 'CASCADE' })
   likes: ProductLike[];
 }

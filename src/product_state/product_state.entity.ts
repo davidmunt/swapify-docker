@@ -17,6 +17,6 @@ export class ProductState {
   @Column()
   description: string;
 
-  @OneToMany(() => Product, (product) => product.product_state)
+  @OneToMany(() => Product, (product) => product.product_state, { onDelete: 'CASCADE' })
   products: Product[];
 }

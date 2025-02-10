@@ -3,8 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UploadController } from './upload.controller';
 import { UploadService } from './upload.service';
 import { UploadEntity } from './upload.entity';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import * as path from 'path';
 import { User } from '../user/user.entity';
 import { Product } from '../product/product.entity';
 import { UserModule } from 'src/user/user.module';

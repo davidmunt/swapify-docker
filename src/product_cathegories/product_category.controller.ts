@@ -8,19 +8,22 @@ import {
   Param,
   Post,
   Put,
-  Query,
 } from '@nestjs/common';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProductCategoryService } from './product_category.service';
 import { CreateProductCategoryDto, UpdateProductCategoryDto } from './product_category.dto';
+import { ProductCategory } from './product_category.entity';
 
 @Controller('product_category')
 export class ProductCategoryController {
   constructor(private readonly productCategoryService: ProductCategoryService) {}
 
   @Get()
-  async getAllProductCategory(@Query('xml') xml?: string) {
+  @ApiOperation({ summary: 'Obtener todas las categorias de productos' })
+  @ApiResponse({ status: 200, description: 'Lista de categorias obtenida con exito', type: [ProductCategory] })
+  async getAllProductCategory() {
     try {
-      return this.productCategoryService.getAllProductCategory(xml);
+      return this.productCategoryService.getAllProductCategory();
     } catch (err) {
       throw new HttpException(
         {
@@ -33,16 +36,22 @@ export class ProductCategoryController {
   }
 
   @Get(':id')
-  async getProductCategory(@Param('id') id: string, @Query('xml') xml?: string) {
-    return this.productCategoryService.getProductCategory(parseInt(id), xml);
+  @ApiOperation({ summary: 'Obtener una categoria de producto por ID' })
+  @ApiResponse({ status: 200, description: 'Categoria obtenida con exito', type: ProductCategory })
+  async getProductCategory(@Param('id') id: string) {
+    return this.productCategoryService.getProductCategory(parseInt(id));
   }
 
   @Post()
+  @ApiOperation({ summary: 'Crear una nueva categoria de producto' })
+  @ApiResponse({ status: 201, description: 'Categoria creada correctamente', type: ProductCategory })
   async createProductCategory(@Body() createProductCategoryDto: CreateProductCategoryDto) {
     return this.productCategoryService.createProductCategory(createProductCategoryDto);
   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'Actualizar una categoria de producto existente' })
+  @ApiResponse({ status: 200, description: 'Categoria actualizada correctamente', type: ProductCategory })
   async updateProductCategory(
     @Param('id') id: string,
     @Body() updateProductCategoryDto: UpdateProductCategoryDto,
@@ -51,6 +60,8 @@ export class ProductCategoryController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Eliminar una categoria de producto' })
+  @ApiResponse({ status: 200, description: 'Categoria eliminada correctamente' })
   async deleteProductCategory(@Param('id') id: string) {
     return this.productCategoryService.deleteProductCategory(parseInt(id));
   }
