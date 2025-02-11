@@ -11,6 +11,8 @@ export class ProductLikeController {
   @Post()
   @ApiOperation({ summary: 'Dar like a un producto' })
   @ApiResponse({ status: 201, description: 'Like agregado exitosamente' })
+  @ApiResponse({ status: 400, description: 'No puedes dar like a tu propio producto o ya diste like' })
+  @ApiResponse({ status: 404, description: 'Producto o usuario no encontrado' })
   async likeProduct(@Body() productLikeDto: ProductLikeDto): Promise<void> {
     await this.productLikeService.likeProduct(productLikeDto.productId, productLikeDto.userId);
   }
@@ -18,6 +20,7 @@ export class ProductLikeController {
   @Delete()
   @ApiOperation({ summary: 'Quitar like de un producto' })
   @ApiResponse({ status: 200, description: 'Like eliminado exitosamente' })
+  @ApiResponse({ status: 404, description: 'Like no encontrado' })
   async unlikeProduct(@Body() productLikeDto: ProductLikeDto): Promise<void> {
     await this.productLikeService.unlikeProduct(productLikeDto.productId, productLikeDto.userId);
   }

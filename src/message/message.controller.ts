@@ -9,8 +9,11 @@ export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Enviar un mensaje y notificación a un usuario' })
-  @ApiResponse({ status: 201, description: 'Mensaje enviado y notificación enviada correctamente' })
+  @ApiOperation({ summary: 'Send a message and notification to a user' })
+  @ApiResponse({ status: 201, description: 'Message sent and notification delivered' })
+  @ApiResponse({ status: 400, description: 'Invalid input data' })
+  @ApiResponse({ status: 404, description: 'Product or user not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   async sendMessageForNotification(@Body() sendMessageDto: SendMessageDto) {
     return await this.messageService.sendMessageForNotification(
       sendMessageDto.productId, 

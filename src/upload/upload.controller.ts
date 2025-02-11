@@ -21,7 +21,8 @@ import { Response } from 'express';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as QRCode from 'qrcode';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
+
 
 @ApiTags('Upload')
 @Controller('upload')
@@ -35,6 +36,17 @@ export class UploadController {
   @UseInterceptors(FileInterceptor('file', multerConfig))
   @ApiOperation({ summary: 'Subir un archivo' })
   @ApiResponse({ status: 201, description: 'Archivo subido exitosamente' })
+  @ApiResponse({ status: 400, description: 'Datos de entrada no válidos' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+        id_user: { type: 'string' },
+      },
+    },
+  })
   async uploadFile(
     @UploadedFile() file: Express.Multer.File,
     @Body('id_user') id_user: string,
@@ -55,6 +67,15 @@ export class UploadController {
   @UseInterceptors(FileInterceptor('file', multerConfig))
   @ApiOperation({ summary: 'Subir imagen de chat' })
   @ApiResponse({ status: 201, description: 'Imagen subida correctamente' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+    },
+  })
   async uploadChatImages(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new HttpException('File upload failed', HttpStatus.BAD_REQUEST);
@@ -67,6 +88,16 @@ export class UploadController {
   @UseInterceptors(FilesInterceptor('file', 10, multerConfig))
   @ApiOperation({ summary: 'Subir imagenes de producto' })
   @ApiResponse({ status: 201, description: 'Imagenes añadidas con exito' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'array', items: { type: 'string', format: 'binary' } },
+        product: { type: 'string' },
+      },
+    },
+  })  
   async uploadProductImages(
     @UploadedFiles() files: Express.Multer.File[],
     @Body('product') id_product: string,
@@ -90,6 +121,16 @@ export class UploadController {
   @UseInterceptors(FilesInterceptor('file', 10, multerConfig))
   @ApiOperation({ summary: 'Reemplazar imagenes de un producto' })
   @ApiResponse({ status: 200, description: 'Imagenes reemplazadas con exito' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'array', items: { type: 'string', format: 'binary' } },
+        product: { type: 'string' },
+      },
+    },
+  })  
   async replaceProductImages(
     @UploadedFiles() files: Express.Multer.File[],
     @Body('product') id_product: string,
@@ -106,6 +147,8 @@ export class UploadController {
   @Post('generate-qr')
   @ApiOperation({ summary: 'Generar un código QR' })
   @ApiResponse({ status: 201, description: 'Código QR generado correctamente' })
+  @ApiResponse({ status: 400, description: 'Datos de entrada no válidos' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor' })
   async generateQRCode(@Body() body: { productId: number; userId: string }) {
     const { productId, userId } = body;
     if (!productId || !userId) {
@@ -176,6 +219,15 @@ export class UploadController {
   @UseInterceptors(FileInterceptor('uploadedFile', multerConfig))
   @ApiOperation({ summary: 'Actualizar un archivo subido' })
   @ApiResponse({ status: 200, description: 'Archivo actualizado con éxito' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        uploadedFile: { type: 'string', format: 'binary' },
+      },
+    },
+  })
   async updateUpload(
     @Param('id') id: number,
     @UploadedFile() file: Express.Multer.File,
@@ -189,6 +241,7 @@ export class UploadController {
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar un archivo subido por ID' })
   @ApiResponse({ status: 200, description: 'Archivo eliminado exitosamente' })
+  @ApiResponse({ status: 404, description: 'Archivo no encontrado' })
   deleteInventari(@Param('id') id: string) {
     return this.uploadService.deleteUpload(parseInt(id));
   }

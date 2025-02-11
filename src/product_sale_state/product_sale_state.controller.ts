@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Post,
   Put,
@@ -21,23 +19,16 @@ export class ProductSaleStateController {
   @Get()
   @ApiOperation({ summary: 'Obtener todos los estados de venta de productos' })
   @ApiResponse({ status: 200, description: 'Lista de estados de venta obtenida exitosamente' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor' })
   async getAllProductSaleState() {
-    try {
-      return this.productSaleStateService.getAllProductSaleState();
-    } catch (err) {
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: err,
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    return this.productSaleStateService.getAllProductSaleState();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtener un estado de venta de producto por ID' })
   @ApiResponse({ status: 200, description: 'Estado de venta obtenido exitosamente' })
+  @ApiResponse({ status: 400, description: 'ID del estado de venta invalido' })
+  @ApiResponse({ status: 404, description: 'Estado de venta no encontrado' })
   async getProductSaleState(@Param('id') id: string) {
     return this.productSaleStateService.getProductSaleState(parseInt(id));
   }
@@ -45,6 +36,8 @@ export class ProductSaleStateController {
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo estado de venta de producto' })
   @ApiResponse({ status: 201, description: 'Estado de venta creado exitosamente' })
+  @ApiResponse({ status: 400, description: 'Datos invalidos para la creacion del estado de venta' })
+  @ApiResponse({ status: 409, description: 'El estado de la venta ya existe' })
   async createProductSaleState(@Body() createProductSaleStateDto: CreateProductSaleStateDto) {
     return this.productSaleStateService.createProductSaleState(createProductSaleStateDto);
   }
@@ -52,16 +45,17 @@ export class ProductSaleStateController {
   @Put(':id')
   @ApiOperation({ summary: 'Actualizar un estado de venta de producto por ID' })
   @ApiResponse({ status: 200, description: 'Estado de venta actualizado exitosamente' })
-  async updateProductSaleState(
-    @Param('id') id: string,
-    @Body() updateProductSaleStateDto: UpdateProductSaleStateDto,
-  ) {
+  @ApiResponse({ status: 400, description: 'Datos invalidos para la actualizacion del estado de venta' })
+  @ApiResponse({ status: 404, description: 'Estado de venta no encontrado' })
+  async updateProductSaleState(@Param('id') id: string, @Body() updateProductSaleStateDto: UpdateProductSaleStateDto) {
     return this.productSaleStateService.updateProductSaleState(parseInt(id), updateProductSaleStateDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar un estado de venta de producto por ID' })
   @ApiResponse({ status: 200, description: 'Estado de venta eliminado exitosamente' })
+  @ApiResponse({ status: 400, description: 'ID del estado de venta invalido' })
+  @ApiResponse({ status: 404, description: 'Estado de venta no encontrado' })
   async deleteProductSaleState(@Param('id') id: string) {
     return this.productSaleStateService.deleteProductSaleState(parseInt(id));
   }

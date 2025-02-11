@@ -21,6 +21,7 @@ export class ProductCategoryController {
   @Get()
   @ApiOperation({ summary: 'Obtener todas las categorias de productos' })
   @ApiResponse({ status: 200, description: 'Lista de categorias obtenida con exito', type: [ProductCategory] })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor' })
   async getAllProductCategory() {
     try {
       return this.productCategoryService.getAllProductCategory();
@@ -38,6 +39,8 @@ export class ProductCategoryController {
   @Get(':id')
   @ApiOperation({ summary: 'Obtener una categoria de producto por ID' })
   @ApiResponse({ status: 200, description: 'Categoria obtenida con exito', type: ProductCategory })
+  @ApiResponse({ status: 400, description: 'ID de categoria invalido' })
+  @ApiResponse({ status: 404, description: 'Categoria de producto no encontrada' })
   async getProductCategory(@Param('id') id: string) {
     return this.productCategoryService.getProductCategory(parseInt(id));
   }
@@ -45,6 +48,8 @@ export class ProductCategoryController {
   @Post()
   @ApiOperation({ summary: 'Crear una nueva categoria de producto' })
   @ApiResponse({ status: 201, description: 'Categoria creada correctamente', type: ProductCategory })
+  @ApiResponse({ status: 400, description: 'Datos de entrada invalidos' })
+  @ApiResponse({ status: 409, description: 'La categoria ya existe' })
   async createProductCategory(@Body() createProductCategoryDto: CreateProductCategoryDto) {
     return this.productCategoryService.createProductCategory(createProductCategoryDto);
   }
@@ -52,6 +57,8 @@ export class ProductCategoryController {
   @Put(':id')
   @ApiOperation({ summary: 'Actualizar una categoria de producto existente' })
   @ApiResponse({ status: 200, description: 'Categoria actualizada correctamente', type: ProductCategory })
+  @ApiResponse({ status: 400, description: 'ID de categoria invalido o datos de entrada incorrectos' })
+  @ApiResponse({ status: 404, description: 'Categoria de producto no encontrada' })
   async updateProductCategory(
     @Param('id') id: string,
     @Body() updateProductCategoryDto: UpdateProductCategoryDto,
@@ -62,6 +69,8 @@ export class ProductCategoryController {
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar una categoria de producto' })
   @ApiResponse({ status: 200, description: 'Categoria eliminada correctamente' })
+  @ApiResponse({ status: 400, description: 'ID de categoria invalido' })
+  @ApiResponse({ status: 404, description: 'Categoria de producto no encontrada' })
   async deleteProductCategory(@Param('id') id: string) {
     return this.productCategoryService.deleteProductCategory(parseInt(id));
   }
