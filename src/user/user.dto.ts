@@ -8,6 +8,7 @@ import {
     IsDateString,
     IsOptional,
     IsNotEmpty,
+    IsNumber,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -81,4 +82,18 @@ export class UpdateUserDto {
     @IsString()
     @IsOptional()
     tokenNotifications?: string;
+}
+
+
+export class AddBallanceToUserDto {
+    @ApiProperty({ example: 'ur6IGn79fRhCkDlyE1AQicKBmu92' })
+    @IsString()
+    @IsNotEmpty()
+    id_user: string;
+
+    @ApiProperty({ example: 100.50 })
+    @IsNumber()
+    @IsNotEmpty()
+    @Min(0)
+    balance: number;
 }

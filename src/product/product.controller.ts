@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProductService } from './product.service';
-import { CreateProductDto, UpdateProductDto, FilterProductDto, BuyProductDto } from './product.dto';
+import { CreateProductDto, UpdateProductDto, FilterProductDto, BuyProductDto, SwapProductDto } from './product.dto';
 
 @ApiTags('Product')
 @Controller('product')
@@ -83,5 +83,16 @@ export class ProductController {
     @Post('buy')
     async buyProduct(@Body() buyProductDto: BuyProductDto) {
         return this.productService.buyProduct(buyProductDto.productId, buyProductDto.buyerId, buyProductDto.sellerId);
+    }
+
+    @ApiOperation({ summary: 'Intercambiar un producto' })
+    @ApiResponse({ status: 200, description: 'Producto intercambiado con exito' })
+    @ApiResponse({ status: 400, description: 'Datos de compra invalidos' })
+    @ApiResponse({ status: 404, description: 'Producto, vendedor o comprador no encontrado' })
+    @ApiResponse({ status: 406, description: 'El usuario no puede comprar su propio producto o el producto no esta en venta' })
+    @ApiResponse({ status: 500, description: 'Error interno del servidor' })
+    @Post('swap')
+    async swapProduct(@Body() swapProductDto: SwapProductDto) {
+        return this.productService.swapProduct(swapProductDto.productId, swapProductDto.productSwapedId, swapProductDto.buyerId, swapProductDto.sellerId);
     }
 }

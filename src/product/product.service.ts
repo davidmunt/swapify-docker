@@ -20,7 +20,7 @@ export class ProductService {
 
   async getAllProducts(): Promise<Product[]> {
     const allProducts = await this.productRepository.find({
-      relations: ['user', 'product_category', 'product_state', 'product_sale_state', 'images', 'likes', 'likes.user', 'buyer'], 
+      relations: ['user', 'product_category', 'product_state', 'product_sale_state', 'images', 'likes', 'likes.user', 'buyer', 'exchangedWith'], 
     });
     return allProducts;
   }  
@@ -28,7 +28,7 @@ export class ProductService {
   async getProduct(id: number): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: { id_product: id },
-      relations: ['user', 'product_category', 'product_state', 'product_sale_state', 'images', 'likes', 'likes.user', 'buyer'],
+      relations: ['user', 'product_category', 'product_state', 'product_sale_state', 'images', 'likes', 'likes.user', 'buyer', 'exchangedWith'],
     });
     if (!product) {
       throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
@@ -38,7 +38,7 @@ export class ProductService {
 
   async getFilteredProducts(filters: any): Promise<Product[]> {
     const allProducts = await this.productRepository.find({
-      relations: ['user', 'product_category', 'product_state', 'product_sale_state', 'images', 'likes', 'likes.user', 'buyer'],
+      relations: ['user', 'product_category', 'product_state', 'product_sale_state', 'images', 'likes', 'likes.user', 'buyer', 'exchangedWith'],
     });
     let filteredProducts = allProducts;
     if (filters.busqueda) {
@@ -113,6 +113,18 @@ export class ProductService {
     if (!saleState) {
       throw new HttpException("Estado del la compra del producto no encontrado", HttpStatus.BAD_REQUEST);
     }
+    if (createProductDto.product_model.trim() === '') {
+      throw new HttpException('El modelo del producto no puede estar vacio', HttpStatus.BAD_REQUEST);
+    }
+    if (createProductDto.product_brand.trim() === '') {
+      throw new HttpException('La marca del producto no puede estar vacia', HttpStatus.BAD_REQUEST);
+    }
+    if (createProductDto.description.trim() === '') {
+      throw new HttpException('La descripción del producto no puede estar vacia', HttpStatus.BAD_REQUEST);
+    }
+    if (createProductDto.price == null || createProductDto.price < 0) {
+      throw new HttpException('El precio no puede ser negativo', HttpStatus.BAD_REQUEST);
+    }    
     const newProduct = this.productRepository.create(createProductDto);
     newProduct.user = user;
     newProduct.product_category = category; 
@@ -124,7 +136,7 @@ export class ProductService {
   async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
     const existingProduct = await this.productRepository.findOne({
       where: { id_product: id },
-      relations: ['product_category', 'product_state', 'product_sale_state', 'user', 'buyer'], 
+      relations: ['product_category', 'product_state', 'product_sale_state', 'user', 'buyer', 'exchangedWith'], 
     });
     if (!existingProduct) {
       throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
@@ -165,6 +177,18 @@ export class ProductService {
       }
       existingProduct.buyer = buyer;
     }
+    if (updateProductDto.product_model.trim() === '') {
+      throw new HttpException('El modelo del producto no puede estar vacio', HttpStatus.BAD_REQUEST);
+    }
+    if (updateProductDto.product_brand.trim() === '') {
+      throw new HttpException('La marca del producto no puede estar vacia', HttpStatus.BAD_REQUEST);
+    }
+    if (updateProductDto.description.trim() === '') {
+      throw new HttpException('La descripción del producto no puede estar vacia', HttpStatus.BAD_REQUEST);
+    }
+    if (updateProductDto.price == null || updateProductDto.price < 0) {
+      throw new HttpException('El precio no puede ser negativo', HttpStatus.BAD_REQUEST);
+    }   
     this.productRepository.merge(existingProduct, updateProductDto);
     return await this.productRepository.save(existingProduct);
   }
@@ -182,7 +206,7 @@ export class ProductService {
   async buyProduct(productId: number, buyerId: string, sellerId: string): Promise<{ message: string }> {
     const product = await this.productRepository.findOne({
       where: { id_product: productId },
-      relations: ['user', 'product_sale_state'],
+      relations: ['user', 'product_sale_state', 'exchangedWith'],
     });
     if (!product) {
       throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
@@ -226,5 +250,72 @@ export class ProductService {
     product.buyer = buyer;
     await this.productRepository.save(product);
     return { message: 'Compra realizada con exito' };
+  }
+
+  async swapProduct(productId: number, productSwapedId: number, buyerId: string, sellerId: string): Promise<{ message: string }> {
+    const product = await this.productRepository.findOne({
+      where: { id_product: productId },
+      relations: ['user', 'product_sale_state', 'exchangedWith'],
+    });
+    if (!product) {
+      throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
+    }
+    const productSwaped = await this.productRepository.findOne({
+      where: { id_product: productSwapedId },
+      relations: ['user', 'product_sale_state', 'exchangedWith'],
+    });
+    if (!productSwaped) {
+      throw new HttpException('Producto intercambiado no encontrado', HttpStatus.NOT_FOUND);
+    }
+    if (product.exchangedWith != null || productSwaped.exchangedWith != null) {
+      throw new HttpException('Uno de los productos ya ha sido intercambiado', HttpStatus.NOT_ACCEPTABLE);
+    }    
+    const seller = await this.userRepository.findOne({ where: { id_user: sellerId } });
+    if (!seller) {
+      throw new HttpException('Vendedor no encontrado', HttpStatus.NOT_FOUND);
+    }
+    if (product.user.id_user != seller.id_user) {
+      throw new HttpException('No es tu producto', HttpStatus.NOT_ACCEPTABLE);
+    }
+    if (productId === productSwapedId) {
+      throw new HttpException('No puedes intercambiar el mismo producto', HttpStatus.NOT_ACCEPTABLE);
+    }
+    if (product.user.id_user === productSwaped.user.id_user) {
+      throw new HttpException('No puedes intercambiar productos que pertenecen a la misma persona', HttpStatus.NOT_ACCEPTABLE);
+    } 
+    if (product.buyer != null || productSwaped.buyer != null) {
+      throw new HttpException('Uno de los productos ya ha sido vendido', HttpStatus.NOT_ACCEPTABLE);
+    }      
+    const buyer = await this.userRepository.findOne({ where: { id_user: buyerId } });
+    if (!buyer) {
+      throw new HttpException('Comprador no encontrado', HttpStatus.NOT_FOUND);
+    }
+    if (productSwaped.user.id_user != buyer.id_user) {
+      throw new HttpException('No es tu producto', HttpStatus.NOT_ACCEPTABLE);
+    }
+    if (buyer.id_user === seller.id_user) {
+      throw new HttpException('No puedes intercambiar tu propio producto', HttpStatus.NOT_ACCEPTABLE);
+    }
+    if (product.product_sale_state.name != "En venta") {
+      throw new HttpException('Este producto no esta a la venta', HttpStatus.NOT_ACCEPTABLE);
+    }
+    if (productSwaped.product_sale_state.name != "En venta") {
+      throw new HttpException('El producto de intercambio no esta a la venta', HttpStatus.NOT_ACCEPTABLE);
+    }
+    const soldState = await this.productSaleStateRepository.findOne({
+      where: { name: "Vendido" },
+    });
+    if (!soldState) {
+      throw new HttpException('Estado de venta (Vendido) no encontrado', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    product.product_sale_state = soldState;
+    productSwaped.product_sale_state = soldState;
+    product.buyer = buyer;
+    productSwaped.buyer = seller;
+    product.exchangedWith = productSwaped;
+    productSwaped.exchangedWith = product;
+    await this.productRepository.save(product);
+    await this.productRepository.save(productSwaped);
+    return { message: 'Intercambio realizado con exito' };
   }
 }

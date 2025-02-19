@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { AddBallanceToUserDto, CreateUserDto, UpdateUserDto } from './user.dto';
 import { User } from './user.entity';
 
 @Injectable()
@@ -35,6 +35,21 @@ export class UserService {
       if (userEmailUsed) {
         throw new HttpException('Email del usuario en uso', HttpStatus.CONFLICT);
       }  
+      if (createUserDto.name.trim() === '') {
+        throw new HttpException('El nombre no puede estar vacio', HttpStatus.BAD_REQUEST);
+      }
+      
+      if (createUserDto.surname.trim() === '') {
+        throw new HttpException('El apellido no puede estar vacio', HttpStatus.BAD_REQUEST);
+      }
+      
+      if (createUserDto.email.trim() === '') {
+        throw new HttpException('El email no puede estar vacio', HttpStatus.BAD_REQUEST);
+      }
+      
+      if (isNaN(Date.parse(createUserDto.dateBirth))) {
+        throw new HttpException('La fecha de nacimiento no es valida', HttpStatus.BAD_REQUEST);
+      }
     const user = this.usersRepository.create(createUserDto);
     return this.usersRepository.save(user);
   }  
@@ -54,6 +69,21 @@ export class UserService {
       throw new HttpException('Usario no encontrado', HttpStatus.NOT_FOUND);
     }
     await this.usersRepository.delete({ id_user });
+  }
+
+  async addBallanceToUser(addBallanceToUserDto: AddBallanceToUserDto): Promise<User> {
+    const id_user = addBallanceToUserDto.id_user;
+    const balance = parseFloat(addBallanceToUserDto.balance.toString()); 
+    const user = await this.usersRepository.findOne({ where: { id_user } });
+    if (!user) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+    if (balance <= 0) {
+      throw new HttpException('El saldo a añadir no puede ser 0 o un numero negativo', HttpStatus.BAD_REQUEST);
+    }
+    user.balance = parseFloat(user.balance.toString()) + balance;
+    user.balance = parseFloat(user.balance.toFixed(2)); 
+    return await this.usersRepository.save(user);
   }
 
   async vincularArchivo(id_user: string, id_archivo: number) {

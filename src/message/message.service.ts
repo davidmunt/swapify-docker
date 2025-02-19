@@ -21,9 +21,6 @@ export class MessageService {
     if (!product) {
       throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
     }
-    if (product.user.id_user != sender && product.user.id_user != reciver) { 
-      throw new HttpException('Este producto no es tuyo', HttpStatus.BAD_REQUEST);
-    }
     const senderUser = await this.userRepository.findOne({ where: { id_user: sender } });
     if (!senderUser) {
       throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);

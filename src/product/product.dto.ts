@@ -173,3 +173,25 @@ export class BuyProductDto {
   @IsNotEmpty()
   sellerId: string;
 }
+
+export class SwapProductDto {
+  @ApiProperty({ example: 1 })
+  @IsNumber()
+  @IsNotEmpty()
+  productId: number;
+
+  @ApiProperty({ example: 2 })
+  @IsNumber()
+  @IsNotEmpty()
+  productSwapedId: number;
+
+  @ApiProperty({ example: 'M49GpUq9SFdVWEvBpzlkDTkWovJ3' })
+  @IsString()
+  @IsNotEmpty()
+  buyerId: string;
+
+  @ApiProperty({ example: 'ur6IGn79fRhCkDlyE1AQicKBmu92' })
+  @IsString()
+  @IsNotEmpty()
+  sellerId: string;
+}

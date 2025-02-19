@@ -3,14 +3,12 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
+import { AddBallanceToUserDto, CreateUserDto, UpdateUserDto } from './user.dto';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 
@@ -60,5 +58,13 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   async deleteUser(@Param('id') id: string) {
     return this.userService.deleteUser(id);
+  }
+
+  @Post('addBallance')
+  @ApiOperation({ summary: 'Añadir saldo' })
+  @ApiResponse({ status: 201, description: 'Saldo añadido correctamente', type: User })
+  @ApiResponse({ status: 400, description: 'Datos invalidos para añadir saldo al usuario' })
+  async addBallanceToUser(@Body() addBallanceToUserDto: AddBallanceToUserDto) {
+    return this.userService.addBallanceToUser(addBallanceToUserDto);
   }
 }

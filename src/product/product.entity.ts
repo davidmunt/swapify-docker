@@ -13,6 +13,7 @@ import {
     UpdateDateColumn,
     ManyToOne,
     OneToMany,
+    OneToOne,
 } from 'typeorm';
 
 @Entity()
@@ -46,6 +47,10 @@ export class Product {
 
   @UpdateDateColumn({ type: 'timestamp' })
   last_updated: Date;
+
+  @OneToOne(() => Product, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'exchanged_product_id' })
+  exchangedWith: Product;
 
   @ManyToOne(() => ProductCategory, (product_category) => product_category.products, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_category_product' })
