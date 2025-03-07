@@ -84,7 +84,6 @@ export class UpdateUserDto {
     tokenNotifications?: string;
 }
 
-
 export class AddBallanceToUserDto {
     @ApiProperty({ example: 'ur6IGn79fRhCkDlyE1AQicKBmu92' })
     @IsString()
@@ -96,4 +95,17 @@ export class AddBallanceToUserDto {
     @IsNotEmpty()
     @Min(0)
     balance: number;
+}
+
+export class AddRatingToUserDto {
+    @ApiProperty({ example: 'ur6IGn79fRhCkDlyE1AQicKBmu92' })
+    @IsString()
+    @IsNotEmpty()
+    id_user: string;
+
+    @ApiProperty({ example: 4.50 })
+    @IsNumber()
+    @IsNotEmpty()
+    @Min(0)
+    rating: number;
 }

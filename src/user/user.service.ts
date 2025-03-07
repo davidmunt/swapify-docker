@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AddBallanceToUserDto, CreateUserDto, UpdateUserDto } from './user.dto';
+import { AddBallanceToUserDto, AddRatingToUserDto, CreateUserDto, UpdateUserDto } from './user.dto';
 import { User } from './user.entity';
 
 @Injectable()
@@ -85,6 +85,22 @@ export class UserService {
     user.balance = parseFloat(user.balance.toFixed(2)); 
     return await this.usersRepository.save(user);
   }
+
+  async addRatingToUser(addRatingToUserDto: AddRatingToUserDto): Promise<User> {
+    const { id_user, rating } = addRatingToUserDto;
+    const parsedRating = parseFloat(rating.toString());
+    const user = await this.usersRepository.findOne({ where: { id_user } });
+    if (!user) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+    if (parsedRating <= 0 || parsedRating > 5) {
+      throw new HttpException('La valoracion a añadir tiene que ser mas de 0 y menos de 5', HttpStatus.BAD_REQUEST);
+    }
+    user.rating = (user.rating * user.num_rating + parsedRating) / (user.num_rating + 1);
+    user.num_rating += 1;
+    user.rating = parseFloat(user.rating.toFixed(2));
+    return await this.usersRepository.save(user);
+}
 
   async vincularArchivo(id_user: string, id_archivo: number) {
     const user = await this.usersRepository.findOne({ where: { id_user } });

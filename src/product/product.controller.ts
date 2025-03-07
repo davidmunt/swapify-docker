@@ -5,8 +5,6 @@ import {
     Put,
     Delete,
     Param,
-    HttpStatus,
-    HttpException,
     Body,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -94,5 +92,32 @@ export class ProductController {
     @Post('swap')
     async swapProduct(@Body() swapProductDto: SwapProductDto) {
         return this.productService.swapProduct(swapProductDto.productId, swapProductDto.productSwapedId, swapProductDto.buyerId, swapProductDto.sellerId);
+    }
+
+    @ApiOperation({ summary: 'Obtener los productos que le has dado like' })
+    @ApiResponse({ status: 200, description: 'Lista de productos filtrados obtenida con exito' })
+    @ApiResponse({ status: 400, description: 'Datos de entrada invalidos' })
+    @ApiResponse({ status: 500, description: 'Error interno del servidor' })
+    @Get('likesProduct/:id')
+    async getYoureLikedProducts(@Param('id') id: string) {
+        return await this.productService.getYoureLikedProducts(id);
+    }
+
+    @ApiOperation({ summary: 'Obtener tus ventas y compras de productos' })
+    @ApiResponse({ status: 200, description: 'Productos recibidos' })
+    @ApiResponse({ status: 400, description: 'Datos de compra invalidos' })
+    @ApiResponse({ status: 404, description: 'Producto, usu no encontrado' })
+    @ApiResponse({ status: 500, description: 'Error interno del servidor' })
+    @Get('envolvement/:id')
+    async getYoureEnvolventProducts(@Param('id') id: string) {
+        return this.productService.getYoureEnvolventProducts(id);
+    }
+
+    @ApiOperation({ summary: 'Obtener los productos de un usuario' })
+    @ApiResponse({ status: 200, description: 'Producto obtenido con exito' })
+    @ApiResponse({ status: 400, description: 'ID de usuario invalido' })
+    @Get('user/:id')
+    async getYoureProducts(@Param('id') id: string) {
+        return this.productService.getYoureProducts(id);
     }
 }

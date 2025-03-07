@@ -166,6 +166,9 @@ export class ProductService {
       if (!saleState) {
         throw new HttpException("Estado de la venta del producto no encontrado", HttpStatus.BAD_REQUEST);
       }
+      if (saleState.name == "Vendido") {
+        throw new HttpException("No se puede vender un producto de esta forma", HttpStatus.BAD_REQUEST);
+      }
       existingProduct.product_sale_state = saleState;
     }
     if (updateProductDto.buyer_id) {
@@ -250,6 +253,23 @@ export class ProductService {
     product.buyer = buyer;
     await this.productRepository.save(product);
     return { message: 'Compra realizada con exito' };
+  }  
+
+  async getYoureProducts(userId: string): Promise<Product[]> {
+    const user = await this.userRepository.findOne({
+      where : { id_user: userId }
+    })
+    if (!user) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+    const products = await this.productRepository.find({
+      where: { user: user }, 
+      relations: ['user', 'product_category', 'product_state', 'product_sale_state', 'images', 'likes', 'likes.user', 'buyer', 'exchangedWith'],
+    });
+    if (!products) {
+      throw new HttpException('Producto no encontrado', HttpStatus.NOT_FOUND);
+    }
+    return products;
   }
 
   async swapProduct(productId: number, productSwapedId: number, buyerId: string, sellerId: string): Promise<{ message: string }> {
@@ -318,4 +338,38 @@ export class ProductService {
     await this.productRepository.save(productSwaped);
     return { message: 'Intercambio realizado con exito' };
   }
+
+  async getYoureLikedProducts(userID: any): Promise<Product[]> {
+    return this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.user', 'user')
+      .leftJoinAndSelect('product.product_category', 'product_category')
+      .leftJoinAndSelect('product.product_state', 'product_state')
+      .leftJoinAndSelect('product.product_sale_state', 'product_sale_state')
+      .leftJoinAndSelect('product.images', 'images')
+      .leftJoinAndSelect('product.likes', 'likes')
+      .leftJoinAndSelect('likes.user', 'liked_user')
+      .leftJoinAndSelect('product.buyer', 'buyer')
+      .leftJoinAndSelect('product.exchangedWith', 'exchangedWith')
+      .where('liked_user.id_user = :userID', { userID })
+      .getMany();
+  }
+
+  async getYoureEnvolventProducts(userID: string): Promise<Product[]> {
+    const envolventProducts = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.user', 'user')
+      .leftJoinAndSelect('product.product_category', 'product_category')
+      .leftJoinAndSelect('product.product_state', 'product_state')
+      .leftJoinAndSelect('product.product_sale_state', 'product_sale_state')
+      .leftJoinAndSelect('product.images', 'images')
+      .leftJoinAndSelect('product.likes', 'likes')
+      .leftJoinAndSelect('likes.user', 'liked_user')
+      .leftJoinAndSelect('product.buyer', 'buyer')
+      .leftJoinAndSelect('product.exchangedWith', 'exchangedWith')
+      .where('(product.product_sale_state = 4) AND (user.id_user = :userID OR buyer.id_user = :userID)', { userID })
+      .orderBy('product.last_updated', 'DESC')
+      .getMany(); 
+    return envolventProducts;
+  }     
 }

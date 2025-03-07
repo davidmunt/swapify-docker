@@ -28,6 +28,12 @@ export class User {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 }) 
   balance: number;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 }) 
+  rating: number;
+
+  @Column({ default: 0 }) 
+  num_rating: number;
+
   @Column({ nullable: true }) 
   avatar_id: number | null;
 

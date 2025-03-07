@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AddBallanceToUserDto, CreateUserDto, UpdateUserDto } from './user.dto';
+import { AddBallanceToUserDto, CreateUserDto, UpdateUserDto, AddRatingToUserDto } from './user.dto';
 import { UserService } from './user.service';
 import { User } from './user.entity';
 
@@ -66,5 +66,13 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'Datos invalidos para añadir saldo al usuario' })
   async addBallanceToUser(@Body() addBallanceToUserDto: AddBallanceToUserDto) {
     return this.userService.addBallanceToUser(addBallanceToUserDto);
+  }
+
+  @Post('addRating')
+  @ApiOperation({ summary: 'Añadir valoracion' })
+  @ApiResponse({ status: 201, description: 'Valoracion añadida correctamente', type: User })
+  @ApiResponse({ status: 400, description: 'Datos invalidos para añadir valoracion al usuario' })
+  async addRatingToUser(@Body() addRatingToUserDto: AddRatingToUserDto) {
+    return this.userService.addRatingToUser(addRatingToUserDto);
   }
 }
