@@ -103,6 +103,16 @@ export class AddRatingToUserDto {
     @IsNotEmpty()
     id_user: string;
 
+    @ApiProperty({ example: 'ud6IGn79fRhCkDlyE1AQicKBmu92' })
+    @IsString()
+    @IsNotEmpty()
+    id_customer: string;
+
+    @ApiProperty({ example: 1 })
+    @IsNumber()
+    @IsNotEmpty()
+    id_product: number;
+
     @ApiProperty({ example: 4.50 })
     @IsNumber()
     @IsNotEmpty()

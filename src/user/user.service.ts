@@ -3,11 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AddBallanceToUserDto, AddRatingToUserDto, CreateUserDto, UpdateUserDto } from './user.dto';
 import { User } from './user.entity';
+import { Product } from '../product/product.entity';
 
 @Injectable()
 export class UserService {
   constructor(    
-    @InjectRepository(User) private readonly usersRepository: Repository<User>
+    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    @InjectRepository(Product) private readonly productRepository: Repository<Product>
   ) {}
 
   async getAllUsers(): Promise<User[]> {
@@ -87,11 +89,34 @@ export class UserService {
   }
 
   async addRatingToUser(addRatingToUserDto: AddRatingToUserDto): Promise<User> {
-    const { id_user, rating } = addRatingToUserDto;
+    const id_user = addRatingToUserDto.id_user;
+    const id_customer = addRatingToUserDto.id_customer;
+    const id_product = addRatingToUserDto.id_product;
+    const rating = addRatingToUserDto.rating;
     const parsedRating = parseFloat(rating.toString());
-    const user = await this.usersRepository.findOne({ where: { id_user } });
+    const user = await this.usersRepository.findOne({ where: { id_user: id_user } });
     if (!user) {
       throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+    const customer = await this.usersRepository.findOne({ where: { id_user: id_customer } });
+    if (!customer) {
+      throw new HttpException('Cliente no encontrado', HttpStatus.NOT_FOUND);
+    }
+    const product = await this.productRepository.findOne({ 
+      where: { id_product: id_product }, 
+      relations: ['user', 'buyer'] 
+    });
+    if (!product) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+    if (product.user.id_user != id_user) {
+      throw new HttpException('El usuario no es el dueño del producto', HttpStatus.BAD_REQUEST);
+    }
+    if (product.buyer.id_user == null) {
+      throw new HttpException('El producto no ha sido comprado', HttpStatus.BAD_REQUEST);
+    }
+    if (product.buyer.id_user != id_customer) {
+      throw new HttpException('El usuario no es el comprador del producto', HttpStatus.BAD_REQUEST);
     }
     if (parsedRating <= 0 || parsedRating > 5) {
       throw new HttpException('La valoracion a añadir tiene que ser mas de 0 y menos de 5', HttpStatus.BAD_REQUEST);
@@ -100,7 +125,7 @@ export class UserService {
     user.num_rating += 1;
     user.rating = parseFloat(user.rating.toFixed(2));
     return await this.usersRepository.save(user);
-}
+  }
 
   async vincularArchivo(id_user: string, id_archivo: number) {
     const user = await this.usersRepository.findOne({ where: { id_user } });
