@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 ¿Cómo comenzar?
+##  ¿Cómo comenzar?
 
 ### 1. Clona el repositorio
 
@@ -46,7 +46,7 @@ npm run test
 
 ---
 
-## 📦 Tecnologías usadas
+##  Tecnologías usadas
 
 - NestJS (TypeScript)
 - Docker y Docker Compose
@@ -58,14 +58,14 @@ npm run test
 
 ---
 
-## 📌 Requisitos
+##  Requisitos
 
 - Docker y Docker Compose instalados
 - Archivo `.env` correctamente configurado
 
 ---
 
-## 🔐 Funcionalidades del backend
+##  Funcionalidades del backend
 
 - Registro e inicio de sesión con JWT
 - CRUD de productos, usuarios, categorías, estados y más
@@ -78,6 +78,6 @@ npm run test
 
 ---
 
-## 🧑‍💻 Desarrollado por
+##  Desarrollado por
 
 **David Muntean**
