@@ -1,6 +1,7 @@
 import { UploadEntity } from '../upload/upload.entity';
 import { Product } from '../product/product.entity';
 import { ProductLike } from '../product_like/product_like.entity';
+import { ProductView } from '../product_view/product_view.entity';
 import {
   Entity,
   Column,
@@ -54,4 +55,7 @@ export class User {
 
   @OneToMany(() => ProductLike, (like) => like.user, { onDelete: 'CASCADE' })
   likes: ProductLike[];
+
+  @OneToMany(() => ProductView, (productView) => productView.user, { onDelete: 'CASCADE' })
+  productViews: ProductView[];
 }

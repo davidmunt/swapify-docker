@@ -12,6 +12,8 @@ import { ProductSaleStateSeeder } from './db/seeding/seeds/product_sale_state.se
 import { ProductState } from './product_state/product_state.entity';
 import { ProductLike } from './product_like/product_like.entity';
 import { ProductSaleState } from './product_sale_state/product_sale_state.entity';
+import { ProductView } from './product_view/product_view.entity'; 
+
 config();
 
 const options: DataSourceOptions & SeederOptions = {
@@ -30,6 +32,7 @@ const options: DataSourceOptions & SeederOptions = {
     User,
     UploadEntity,
     ProductLike,
+    ProductView,
   ],
   seeds: [
     ProductCategorySeeder,

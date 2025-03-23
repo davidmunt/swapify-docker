@@ -7,7 +7,8 @@ import { ProductLike } from './product_like/product_like.entity';
 import { User } from './user/user.entity';
 import { UploadEntity } from './upload/upload.entity';
 import { ProductState } from './product_state/product_state.entity';
-import { ProductSaleState } from './product_sale_state/product_sale_state.entity';
+import { ProductSaleState } from './product_sale_state/product_sale_state.entity'; 
+import { ProductView } from './product_view/product_view.entity'; 
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ const config = {
     Product,
     ProductLike,
     ProductCategory,
+    ProductView,
   ],
   migrations: ['./src/migrations/*.ts'],
   synchronize: false,

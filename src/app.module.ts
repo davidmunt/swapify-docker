@@ -36,6 +36,12 @@ import { NotificationService } from './notification/notification.service';
 import { MessageModule } from './message/message.module';
 import { MessageController } from './message/message.controller';
 import { MessageService } from './message/message.service';
+import { IAModule } from './ia/ia.module';
+import { IAService } from './ia/ia.service';
+import { ProductViewModule } from './product_view/product_view.module'; 
+import { ProductViewController } from './product_view/product_view.controller'; 
+import { ProductViewService } from './product_view/product_view.service'; 
+import { ProductView } from './product_view/product_view.entity'; 
 
 @Module({
   imports: [
@@ -49,6 +55,7 @@ import { MessageService } from './message/message.service';
     }),
     ProductStateModule,
     ProductSaleStateModule,
+    IAModule,
     UserModule,
     ProductModule,
     ProductCategoryModule,
@@ -56,6 +63,7 @@ import { MessageService } from './message/message.service';
     NotificationModule,
     ProductLikeModule,
     MessageModule,
+    ProductViewModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -77,14 +85,15 @@ import { MessageService } from './message/message.service';
           ProductCategory,
           UploadEntity,
           ProductLike,
+          ProductView,
         ],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
   ],
-  controllers: [UserController, ProductCategoryController, ProductStateController, ProductSaleStateController, ProductController, ProductLikeController, MessageController],
-  providers: [UserService, ProductCategoryService, ProductStateService, ProductSaleStateService, ProductService, ProductLikeService, NotificationService, MessageService],
+  controllers: [UserController, ProductCategoryController, ProductStateController, ProductSaleStateController, ProductController, ProductLikeController, MessageController, ProductViewController],
+  providers: [IAService, UserService, ProductCategoryService, ProductStateService, ProductSaleStateService, ProductService, ProductLikeService, NotificationService, MessageService, ProductViewService],
 })
 export class AppModule {
 }

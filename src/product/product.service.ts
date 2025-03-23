@@ -7,6 +7,8 @@ import { CreateProductDto, UpdateProductDto } from './product.dto';
 import { ProductCategory } from '../product_cathegories/product_category.entity';
 import { ProductState } from '../product_state/product_state.entity';
 import { ProductSaleState } from '../product_sale_state/product_sale_state.entity';
+import { IAService } from '../ia/ia.service';
+import { ProductView } from '../product_view/product_view.entity';
 
 @Injectable()
 export class ProductService {
@@ -16,6 +18,8 @@ export class ProductService {
     @InjectRepository(ProductCategory) private productCategoryRepository: Repository<ProductCategory>,
     @InjectRepository(ProductState) private productStateRepository: Repository<ProductState>,
     @InjectRepository(ProductSaleState) private productSaleStateRepository: Repository<ProductSaleState>,
+    @InjectRepository(ProductView) private readonly productViewRepo: Repository<ProductView>,
+    private iaService: IAService,
   ) {}
 
   async getAllProducts(): Promise<Product[]> {
@@ -40,6 +44,16 @@ export class ProductService {
     const allProducts = await this.productRepository.find({
       relations: ['user', 'product_category', 'product_state', 'product_sale_state', 'images', 'likes', 'likes.user', 'buyer', 'exchangedWith'],
     });
+    if (!filters.busqueda && !filters.precioMax && !filters.precioMin && !filters.categoriaProd && !filters.proximidad && filters.userId) {
+      return await this.iaService.orderProductsByProductView(filters.userId);
+    }
+    if (isNaN(filters.proximidad) || filters.proximidad <= 0) {
+      throw new HttpException('La proximidad debe ser un número mayor que 0', HttpStatus.BAD_REQUEST);
+    }
+    const EARTH_CIRCUMFERENCE_KM = 40075 / 2; 
+    if (filters.proximidad > EARTH_CIRCUMFERENCE_KM) {
+      throw new HttpException(`La proximidad no puede superar los ${EARTH_CIRCUMFERENCE_KM} km`, HttpStatus.BAD_REQUEST);
+    }
     let filteredProducts = allProducts;
     if (filters.busqueda) {
       const lowerBusqueda = filters.busqueda.toLowerCase();
@@ -86,7 +100,7 @@ export class ProductService {
       });
     }
     return filteredProducts;
-  }  
+  } 
 
   async createProduct(createProductDto: CreateProductDto): Promise<Product> {
     const user = await this.userRepository.findOne({
@@ -124,7 +138,7 @@ export class ProductService {
     }
     if (createProductDto.price == null || createProductDto.price < 0) {
       throw new HttpException('El precio no puede ser negativo', HttpStatus.BAD_REQUEST);
-    }    
+    } 
     const newProduct = this.productRepository.create(createProductDto);
     newProduct.user = user;
     newProduct.product_category = category; 

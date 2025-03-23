@@ -179,6 +179,43 @@ export class UploadController {
     }
   }
 
+  @Post('generate-qr-exchange')
+  @ApiOperation({ summary: 'Generar un código QR para intercambiar productos' })
+  @ApiResponse({ status: 201, description: 'Código QR generado correctamente' })
+  @ApiResponse({ status: 400, description: 'Datos de entrada no válidos' })
+  @ApiResponse({ status: 500, description: 'Error interno del servidor' })
+  async generateQRCodeExchange(@Body() body: { productId: number; userId: string, productExchangedId: number }) {
+    const productId = body.productId;
+    const productExchangedId = body.productExchangedId;
+    const userId = body.userId;
+    if (!productId || !productExchangedId  || !userId) {
+      throw new HttpException('Falta por enviar datos', HttpStatus.BAD_REQUEST);
+    }
+    const qrData = JSON.stringify({ productId, productExchangedId, userId });
+    const uploadDir = path.join(__dirname, '..', 'upload', 'img');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    const qrFilename = `qr-${productId}-${productExchangedId}-${userId}-${Date.now()}.png`;
+    const qrPath = path.join(uploadDir, qrFilename);
+    try {
+      await QRCode.toFile(qrPath, qrData, {
+        type: 'png',
+        width: 300,
+      });
+      const savedQR = await this.uploadService.saveQRFile(qrFilename, `/upload/img/${qrFilename}`);
+      return {
+        message: 'Codigo QR generado correctamente',
+        qrPath: savedQR.path,
+      };
+    } catch (error) {
+      throw new HttpException(
+        `Error al generar el código QR: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   @Get('filename/:filename')
   @ApiOperation({ summary: 'Obtener archivo por nombre' })
   @ApiResponse({ status: 200, description: 'Archivo encontrado' })
