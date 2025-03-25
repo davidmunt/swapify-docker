@@ -1,10 +1,12 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProductViewService } from './product_view.service';
 import { SaveProductViewDto } from './product_view.dto';
 import { ProductView } from './product_view.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiTags('Product View')
+@UseGuards(JwtAuthGuard)
 @Controller('product_view')
 export class ProductViewController {
   constructor(private readonly productViewService: ProductViewService) {}

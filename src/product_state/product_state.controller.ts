@@ -6,10 +6,12 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductStateService } from './product_state.service';
 import { CreateProductStateDto, UpdateProductStateDto } from './product_state.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiTags('Product State')
 @Controller('product_state')
@@ -33,6 +35,7 @@ export class ProductStateController {
     return this.productStateService.getProductState(parseInt(id));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo estado de producto' })
   @ApiResponse({ status: 201, description: 'Estado de producto creado exitosamente' })
@@ -42,6 +45,7 @@ export class ProductStateController {
     return this.productStateService.createProductState(createProductStateDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Actualizar un estado de producto por ID' })
   @ApiResponse({ status: 200, description: 'Estado de producto actualizado exitosamente' })
@@ -51,6 +55,7 @@ export class ProductStateController {
     return this.productStateService.updateProductState(parseInt(id), updateProductStateDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar un estado de producto por ID' })
   @ApiResponse({ status: 200, description: 'Estado de producto eliminado exitosamente' })

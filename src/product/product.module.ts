@@ -12,9 +12,10 @@ import { UploadEntity } from '../upload/upload.entity';
 import { ProductLikeModule } from '../product_like/product_like.module';
 import { IAModule } from '../ia/ia.module';
 import { ProductView } from '../product_view/product_view.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, User, UploadEntity, ProductCategory, ProductState, ProductSaleState, ProductLike, ProductView]), ProductLikeModule, IAModule],
+  imports: [TypeOrmModule.forFeature([Product, User, UploadEntity, ProductCategory, ProductState, ProductSaleState, ProductLike, ProductView]), ProductLikeModule, IAModule, AuthModule],
   exports: [TypeOrmModule],
   controllers: [ProductController],
   providers: [ProductService],

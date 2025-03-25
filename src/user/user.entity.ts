@@ -8,11 +8,16 @@ import {
   PrimaryColumn,
   OneToMany,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
   @PrimaryColumn()
   id_user: string; 
+
+  @Exclude()
+  @Column()
+  password: string;
 
   @Column()
   name: string;

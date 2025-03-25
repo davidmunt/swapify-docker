@@ -6,10 +6,12 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductSaleStateService } from './product_sale_state.service';
 import { CreateProductSaleStateDto, UpdateProductSaleStateDto } from './product_sale_state.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiTags('Product Sale State')
 @Controller('product_sale_state')
@@ -33,6 +35,7 @@ export class ProductSaleStateController {
     return this.productSaleStateService.getProductSaleState(parseInt(id));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo estado de venta de producto' })
   @ApiResponse({ status: 201, description: 'Estado de venta creado exitosamente' })
@@ -42,6 +45,7 @@ export class ProductSaleStateController {
     return this.productSaleStateService.createProductSaleState(createProductSaleStateDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Actualizar un estado de venta de producto por ID' })
   @ApiResponse({ status: 200, description: 'Estado de venta actualizado exitosamente' })
@@ -51,6 +55,7 @@ export class ProductSaleStateController {
     return this.productSaleStateService.updateProductSaleState(parseInt(id), updateProductSaleStateDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar un estado de venta de producto por ID' })
   @ApiResponse({ status: 200, description: 'Estado de venta eliminado exitosamente' })

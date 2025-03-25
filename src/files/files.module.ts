@@ -5,6 +5,7 @@ import { GridFsMulterConfigService } from './multer-config.service';
 import { FilesService } from '././files.service';
 import { UserModule } from '../user/user.module';
 import { ProductModule } from '../product/product.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ProductModule } from '../product/product.module';
     }),
     UserModule,
     ProductModule,
+    AuthModule,
   ],
   controllers: [FilesController],
   providers: [GridFsMulterConfigService, FilesService],

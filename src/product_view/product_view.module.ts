@@ -8,9 +8,10 @@ import { UserModule } from '../user/user.module';
 import { IAModule } from '../ia/ia.module';
 import { ProductViewController } from '../product_view/product_view.controller';
 import { ProductViewService } from '../product_view/product_view.service';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProductView, Product, User]), ProductModule, UserModule, IAModule],
+  imports: [TypeOrmModule.forFeature([ProductView, Product, User]), ProductModule, UserModule, IAModule, AuthModule],
   exports: [TypeOrmModule],
   controllers: [ProductViewController],
   providers: [ProductViewService],

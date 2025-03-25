@@ -6,17 +6,20 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AddBallanceToUserDto, CreateUserDto, UpdateUserDto, AddRatingToUserDto } from './user.dto';
+import { AddBallanceToUserDto, CreateUserDto, UpdateUserDto, AddRatingToUserDto, ChangePasswordDto } from './user.dto';
 import { UserService } from './user.service';
 import { User } from './user.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Obtener todos los usuarios' })
   @ApiResponse({ status: 200, description: 'Lista de usuarios obtenida con exito', type: [User] })
   @ApiResponse({ status: 500, description: 'Error interno del servidor' })
@@ -25,6 +28,7 @@ export class UserController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Obtener un usuario por ID' })
   @ApiResponse({ status: 200, description: 'Usuario obtenido con exito', type: User })
   @ApiResponse({ status: 400, description: 'ID del usuario invalido' }) 
@@ -43,6 +47,7 @@ export class UserController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Actualizar un usuario existente' })
   @ApiResponse({ status: 200, description: 'Usuario actualizado correctamente', type: User })
   @ApiResponse({ status: 400, description: 'Datos invalidos para la actualizacion del usuario' })
@@ -52,6 +57,7 @@ export class UserController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Eliminar un usuario' })
   @ApiResponse({ status: 200, description: 'Usuario eliminado correctamente' })
   @ApiResponse({ status: 400, description: 'ID del usuario invalido' }) 
@@ -61,6 +67,7 @@ export class UserController {
   }
 
   @Post('addBallance')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Añadir saldo' })
   @ApiResponse({ status: 201, description: 'Saldo añadido correctamente', type: User })
   @ApiResponse({ status: 400, description: 'Datos invalidos para añadir saldo al usuario' })
@@ -68,7 +75,18 @@ export class UserController {
     return this.userService.addBallanceToUser(addBallanceToUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Post('changePassword')
+  @ApiOperation({ summary: 'Cambiar la contraseña del usuario (sin verificación de antigua)' })
+  @ApiResponse({ status: 200, description: 'Contraseña actualizada correctamente' })
+  @ApiResponse({ status: 400, description: 'Datos inválidos' })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
+  async changePassword(@Body() dto: ChangePasswordDto) {
+    return this.userService.changePassword(dto);
+  }
+
   @Post('addRating')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Añadir valoracion' })
   @ApiResponse({ status: 201, description: 'Valoracion añadida correctamente', type: User })
   @ApiResponse({ status: 400, description: 'Datos invalidos para añadir valoracion al usuario' })

@@ -6,10 +6,13 @@ import { UploadEntity } from './upload.entity';
 import { User } from '../user/user.entity';
 import { Product } from '../product/product.entity';
 import { UserModule } from 'src/user/user.module';
+import { AuthModule } from '../auth/auth.module';
+
 @Module({
   imports: [
     forwardRef(() => UserModule),
     TypeOrmModule.forFeature([UploadEntity, User, Product]),
+    AuthModule
   ],
   providers: [UploadService],
   controllers: [UploadController],

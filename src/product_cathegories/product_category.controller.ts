@@ -8,11 +8,13 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProductCategoryService } from './product_category.service';
 import { CreateProductCategoryDto, UpdateProductCategoryDto } from './product_category.dto';
 import { ProductCategory } from './product_category.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('product_category')
 export class ProductCategoryController {
@@ -45,6 +47,7 @@ export class ProductCategoryController {
     return this.productCategoryService.getProductCategory(parseInt(id));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiOperation({ summary: 'Crear una nueva categoria de producto' })
   @ApiResponse({ status: 201, description: 'Categoria creada correctamente', type: ProductCategory })
@@ -54,6 +57,7 @@ export class ProductCategoryController {
     return this.productCategoryService.createProductCategory(createProductCategoryDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Actualizar una categoria de producto existente' })
   @ApiResponse({ status: 200, description: 'Categoria actualizada correctamente', type: ProductCategory })
@@ -66,6 +70,7 @@ export class ProductCategoryController {
     return this.productCategoryService.updateProductCategory(parseInt(id), updateProductCategoryDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar una categoria de producto' })
   @ApiResponse({ status: 200, description: 'Categoria eliminada correctamente' })

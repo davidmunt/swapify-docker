@@ -42,6 +42,7 @@ import { ProductViewModule } from './product_view/product_view.module';
 import { ProductViewController } from './product_view/product_view.controller'; 
 import { ProductViewService } from './product_view/product_view.service'; 
 import { ProductView } from './product_view/product_view.entity'; 
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { ProductView } from './product_view/product_view.entity';
       }),
       inject: [ConfigService],
     }),
+    AuthModule,
     ProductStateModule,
     ProductSaleStateModule,
     IAModule,

@@ -8,6 +8,7 @@ import {
   UploadedFiles,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { FilesService } from './files.service';

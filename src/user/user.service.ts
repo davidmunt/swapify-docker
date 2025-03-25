@@ -1,9 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AddBallanceToUserDto, AddRatingToUserDto, CreateUserDto, UpdateUserDto } from './user.dto';
+import { AddBallanceToUserDto, AddRatingToUserDto, ChangePasswordDto, CreateUserDto, UpdateUserDto } from './user.dto';
 import { User } from './user.entity';
 import { Product } from '../product/product.entity';
+import * as bcrypt from 'bcryptjs';
+
 
 @Injectable()
 export class UserService {
@@ -52,6 +54,8 @@ export class UserService {
       if (isNaN(Date.parse(createUserDto.dateBirth))) {
         throw new HttpException('La fecha de nacimiento no es valida', HttpStatus.BAD_REQUEST);
       }
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    createUserDto.password = hashedPassword;
     const user = this.usersRepository.create(createUserDto);
     return this.usersRepository.save(user);
   }  
@@ -86,6 +90,22 @@ export class UserService {
     user.balance = parseFloat(user.balance.toString()) + balance;
     user.balance = parseFloat(user.balance.toFixed(2)); 
     return await this.usersRepository.save(user);
+  }
+
+  async changePassword(changePasswordDto: ChangePasswordDto): Promise<string> {
+    const id_user = changePasswordDto.id_user;
+    const newPassword = changePasswordDto.newPassword;
+    const user = await this.usersRepository.findOne({
+      where: { id_user },
+      select: ['id_user', 'password'],
+    });
+    if (!user) {
+      throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await this.usersRepository.save(user);
+    return 'Contraseña actualizada correctamente';
   }
 
   async addRatingToUser(addRatingToUserDto: AddRatingToUserDto): Promise<User> {

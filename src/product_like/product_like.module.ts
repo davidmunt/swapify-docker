@@ -6,11 +6,13 @@ import { ProductLikeController } from './product_like.controller';
 import { Product } from '../product/product.entity';
 import { User } from '../user/user.entity';
 import { NotificationModule } from '../notification/notification.module'; 
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ProductLike, Product, User]),
     NotificationModule,
+    AuthModule,
   ],
   controllers: [ProductLikeController],
   providers: [ProductLikeService],

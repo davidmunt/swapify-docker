@@ -1,9 +1,11 @@
-import { Controller, Post, Delete, Body } from '@nestjs/common';
+import { Controller, Post, Delete, Body, UseGuards } from '@nestjs/common';
 import { ProductLikeService } from './product_like.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProductLikeDto } from './product_like.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiTags('Product Like')
+@UseGuards(JwtAuthGuard)
 @Controller('product_like')
 export class ProductLikeController {
   constructor(private readonly productLikeService: ProductLikeService) {}
