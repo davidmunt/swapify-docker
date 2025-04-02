@@ -24,6 +24,7 @@ export class FilesService {
     });
   }
 
+  //obtiene el stream de lectura de una imagen almacenada en gridfs por su id
   async readStream(id: string): Promise<GridFSBucketReadStream> {
     try {
       return await this.fileModel.readFileStream(id);
@@ -32,6 +33,7 @@ export class FilesService {
     }
   }
 
+  //obtiene la informacion de una imagen como nombre, tamaño, tipo, etc
   async findInfo(id: string): Promise<FileInfoVm> {
     const result = await this.fileModel
       .findById(id)
@@ -47,10 +49,12 @@ export class FilesService {
     };
   }
 
+  //elimina una imagen
   async deleteFile(id: string): Promise<boolean> {
     return await this.fileModel.delete(id);
   }
 
+  //procesa una imagen json desde gridfs, convierte su contenido y extrae el serial_number del segundo elemento
   async processJsonStream(fileId: ObjectId): Promise<string | null> {
     return new Promise<string | null>((resolve, reject) => {
       const stream = this.bucket.openDownloadStream(fileId);

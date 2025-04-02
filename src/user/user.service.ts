@@ -9,15 +9,17 @@ import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
-  constructor(    
+  constructor( 
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
     @InjectRepository(Product) private readonly productRepository: Repository<Product>
   ) {}
 
+  //obtiene todos los usuarios
   async getAllUsers(): Promise<User[]> {
     return await this.usersRepository.find();
   }
 
+  //obtiene la informacion de un usuario
   async getUser(id_user: string): Promise<User> {
     const user = await this.usersRepository.findOne({ where: { id_user } });
     if (!user) {
@@ -26,6 +28,7 @@ export class UserService {
     return user;
   }
 
+  //crea un usuario
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const userIdUsed = await this.usersRepository.findOne({
       where: [{ id_user: createUserDto.id_user }],
@@ -60,6 +63,7 @@ export class UserService {
     return this.usersRepository.save(user);
   }  
 
+  //modifica la informacion del usuario
   async updateUser(id_user: string, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.usersRepository.findOne({ where: { id_user } });
     if (!user) {
@@ -69,6 +73,7 @@ export class UserService {
     return this.usersRepository.save(user);
   }
 
+  //elimina un usuario
   async deleteUser(id_user: string): Promise<void> {
     const user = await this.usersRepository.findOne({ where: { id_user } });
     if (!user) {
@@ -77,6 +82,7 @@ export class UserService {
     await this.usersRepository.delete({ id_user });
   }
 
+  //añade saldo a un usuario
   async addBallanceToUser(addBallanceToUserDto: AddBallanceToUserDto): Promise<User> {
     const id_user = addBallanceToUserDto.id_user;
     const balance = parseFloat(addBallanceToUserDto.balance.toString()); 
@@ -92,6 +98,7 @@ export class UserService {
     return await this.usersRepository.save(user);
   }
 
+  //cambia la contraseña del usuario
   async changePassword(changePasswordDto: ChangePasswordDto): Promise<string> {
     const id_user = changePasswordDto.id_user;
     const newPassword = changePasswordDto.newPassword;
@@ -108,6 +115,7 @@ export class UserService {
     return 'Contraseña actualizada correctamente';
   }
 
+  //añade una valoracion a un usuario
   async addRatingToUser(addRatingToUserDto: AddRatingToUserDto): Promise<User> {
     const id_user = addRatingToUserDto.id_user;
     const id_customer = addRatingToUserDto.id_customer;
@@ -147,6 +155,7 @@ export class UserService {
     return await this.usersRepository.save(user);
   }
 
+  //vincula el avatar del usuario al usuario
   async vincularArchivo(id_user: string, id_archivo: number) {
     const user = await this.usersRepository.findOne({ where: { id_user } });
     if (!user) {

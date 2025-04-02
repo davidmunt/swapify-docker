@@ -18,6 +18,7 @@ export class UploadService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
+  //guarda la imagen y lo asocia a un usuario
   async saveFile(file: Express.Multer.File, id_user: string) {
     const user = await this.userRepository.findOne({ where: { id_user } });
     if (!user) {
@@ -35,6 +36,7 @@ export class UploadService {
     return await this.uploadRepository.save(newUpload);
   }
 
+  //guarda una imagen para un mensaje y no lo asocia a nada
   async saveFileMessage(file: Express.Multer.File) {
     if (!file.filename) {
       throw new Error('El nombre del archivo no está definido.');
@@ -47,6 +49,7 @@ export class UploadService {
     return await this.uploadRepository.save(newUpload);
   }
 
+  //guarda una imagen y lo asocia a un producto
   async saveFileForProduct(file: Express.Multer.File, id_product: number) {
     const product = await this.productRepository.findOne({ where: { id_product } });
     if (!product) {
@@ -61,6 +64,7 @@ export class UploadService {
     return await this.uploadRepository.save(newUpload);
   }  
 
+  //reemplaza todas las imagenes de un producto: elimina las antiguas y guarda las nuevas
   async replaceProductImages(id_product: number, files: Express.Multer.File[]) {
     const product = await this.productRepository.findOne({
       where: { id_product },
@@ -87,6 +91,7 @@ export class UploadService {
     }
   }  
 
+  //guarda una imagen generada(qr) sin asociarlo a nada
   async saveQRFile(filename: string, filePath: string) {
     const newUpload = this.uploadRepository.create({
       name: filename,
@@ -95,6 +100,7 @@ export class UploadService {
     return await this.uploadRepository.save(newUpload);
   }  
   
+  //obtiene todos loa imagenes subidas
   async getAlluploads(): Promise<any> {
     const result = await this.uploadRepository.find({
       relations: ['user'],
@@ -102,6 +108,7 @@ export class UploadService {
     return result;
   }
 
+  //obtiene una imagen por su id
   async getUpload(id: number): Promise<any> {
     const upload = await this.uploadRepository.findOneBy({ id });
     if (!upload) {
@@ -115,7 +122,8 @@ export class UploadService {
       name: upload.name,
     };
   }
-
+  
+  //actualiza una imagen eliminando el anterior y guardando la nueva
   async updateUpload(id: number, file: Express.Multer.File): Promise<any> {
     const existingUpload = await this.uploadRepository.findOne({
       where: { id },
@@ -134,6 +142,7 @@ export class UploadService {
     return await this.uploadRepository.save(existingUpload);
   }
 
+  //elimina una imagen por su id
   async deleteUpload(id: number): Promise<{ message: string }> {
     const result = await this.uploadRepository.delete(id);
     if (result.affected === 0) {

@@ -5,6 +5,7 @@ import * as admin from 'firebase-admin';
 export class NotificationService {
   constructor() {}
 
+  //envia una notificacion push cuando se da like a un producto
   async sendNotificationLikeProduct(message: any): Promise<void> {
     try {
       const mensaje = {
@@ -25,6 +26,7 @@ export class NotificationService {
     }
   } 
 
+  //envia una notificacion push con un mensaje y añado datos para que me redirija a /chat con la informacion necesaria
   async sendNotificationMessage(message: any): Promise<void> {
     try {
       const mensaje = {

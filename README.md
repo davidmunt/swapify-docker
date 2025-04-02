@@ -42,17 +42,6 @@ npm run test
 
 ---
 
-##  Tecnologías usadas
-
-- NestJS (TypeScript)
-- Docker
-- MongoDB
-- JWT para autenticación
-- Swagger para documentación de la API
-- IA (Pollinations) para recomendaciones inteligentes
-
----
-
 ##  Desarrollado por
 
 **David Muntean**

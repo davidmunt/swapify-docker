@@ -14,6 +14,7 @@ export class IAService {
     @InjectRepository(ProductView) private readonly productViewRepo: Repository<ProductView>,
   ) {}
 
+  //funcion que hace una peticion a una API(IA) para recomendar un precio
   async checkPriceOnCreateProduct(
     brand: string,
     model: string,
@@ -56,6 +57,7 @@ export class IAService {
     }
   }
 
+ //funcion que hace una peticion a una API(IA) para devolver los productos reordenados por los intereses del usuario
   async orderProductsByProductView(userId: string): Promise<Product[]> {
     try {
       const products = await this.productRepo.find({
@@ -127,6 +129,7 @@ Ejemplo de formato de salida:
         throw new HttpException('Error en la API de Pollinations', HttpStatus.INTERNAL_SERVER_ERROR);
       }
       const resultText = await response.text();
+      //por si acaso elimino todo lo que no es un guion(-) o numeros: espacios, letras, etc
       const cleaned = resultText.trim().replace(/[^0-9\-]/g, '');
       const ids = cleaned.split('-').map((id) => parseInt(id, 10));
       const orderedProducts = ids

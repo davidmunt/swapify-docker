@@ -13,6 +13,7 @@ export class MessageService {
     private readonly notificationService: NotificationService, 
   ) {}
 
+  //envio una notificacion push al receptor cuando se envia un mensaje
   async sendMessageForNotification(productId: number, text: string, sender: string, reciver: string): Promise<void> {
     const product = await this.productRepository.findOne({
       where: { id_product: productId },

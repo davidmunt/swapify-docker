@@ -11,10 +11,12 @@ export class ProductSaleStateService {
     private productSaleStateRepository: Repository<ProductSaleState>,
   ) {}
 
+  //obtener todos los estados de la venta de los productos
   async getAllProductSaleState(): Promise<ProductSaleState[]> {
     return await this.productSaleStateRepository.find({ relations: ['products'] });
   }
 
+  //obtener un estado de venta
   async getProductSaleState(id: number): Promise<ProductSaleState> {
     const productSaleState = await this.productSaleStateRepository.findOne({
       where: { id_sale_state_product: id },
@@ -26,6 +28,7 @@ export class ProductSaleStateService {
     return productSaleState;
   }
 
+  //crear un estado de venta
   async createProductSaleState(createProductSaleStateDto: CreateProductSaleStateDto): Promise<ProductSaleState> {
     const existingProductSaleState = await this.productSaleStateRepository.findOneBy({ name: createProductSaleStateDto.name });
     if (existingProductSaleState) {
@@ -35,6 +38,7 @@ export class ProductSaleStateService {
     return await this.productSaleStateRepository.save(productSaleState);
   }
 
+  //modificar un estado de venta
   async updateProductSaleState(id: number, updateProductSaleStateDto: UpdateProductSaleStateDto): Promise<ProductSaleState> {
     const existingProductSaleState = await this.productSaleStateRepository.findOneBy({ id_sale_state_product: id });
     if (!existingProductSaleState) {
@@ -47,6 +51,7 @@ export class ProductSaleStateService {
     });
   }
 
+  //eliminar un estado de venta
   async deleteProductSaleState(id: number): Promise<{ message: string }> {
     const existingProductSaleState = await this.productSaleStateRepository.findOneBy({ id_sale_state_product: id });
     if (!existingProductSaleState) {

@@ -14,10 +14,12 @@ export class ProductViewService {
     @InjectRepository(Product) private readonly productRepository: Repository<Product>,
   ) {}
 
+  //obtiene todas las visitas
   async getAllProductViews(): Promise<ProductView[]> {
       return await this.productViewRepository.find({ relations: ['product', 'user'] });
     }
 
+  //guardo las visitas de un usuario a un producto(lo utilizo para la reordenacion de los productos en el apartado de filtros del producto)
   async saveProductView(dto: SaveProductViewDto): Promise<ProductView> {
     const user = await this.userRepository.findOne({ where: { id_user: dto.id_user } });
     const product = await this.productRepository.findOne({ where: { id_product: dto.id_product } });

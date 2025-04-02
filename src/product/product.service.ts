@@ -22,6 +22,7 @@ export class ProductService {
     private iaService: IAService,
   ) {}
 
+  //obtiene todos los productos
   async getAllProducts(): Promise<Product[]> {
     const allProducts = await this.productRepository.find({
       relations: ['user', 'product_category', 'product_state', 'product_sale_state', 'images', 'likes', 'likes.user', 'buyer', 'exchangedWith'], 
@@ -29,6 +30,7 @@ export class ProductService {
     return allProducts;
   }  
 
+  //obtiene un producto por su id
   async getProduct(id: number): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: { id_product: id },
@@ -40,6 +42,7 @@ export class ProductService {
     return product;
   }
 
+  //filtra productos o si no le llegan filtros los ordena con IA
   async getFilteredProducts(filters: any): Promise<Product[]> {
     const allProducts = await this.productRepository.find({
       relations: ['user', 'product_category', 'product_state', 'product_sale_state', 'images', 'likes', 'likes.user', 'buyer', 'exchangedWith'],
@@ -47,12 +50,14 @@ export class ProductService {
     if (!filters.busqueda && !filters.precioMax && !filters.precioMin && !filters.categoriaProd && !filters.proximidad && filters.userId) {
       return await this.iaService.orderProductsByProductView(filters.userId);
     }
-    if (isNaN(filters.proximidad) || filters.proximidad <= 0) {
-      throw new HttpException('La proximidad debe ser un número mayor que 0', HttpStatus.BAD_REQUEST);
-    }
-    const EARTH_CIRCUMFERENCE_KM = 40075 / 2; 
-    if (filters.proximidad > EARTH_CIRCUMFERENCE_KM) {
-      throw new HttpException(`La proximidad no puede superar los ${EARTH_CIRCUMFERENCE_KM} km`, HttpStatus.BAD_REQUEST);
+    if (filters.proximidad !== null && filters.proximidad !== undefined) {
+      if (isNaN(filters.proximidad) || filters.proximidad <= 0) {
+        throw new HttpException('La proximidad debe ser un número mayor que 0', HttpStatus.BAD_REQUEST);
+      }
+      const EARTH_CIRCUMFERENCE_KM = 40075 / 2; 
+      if (filters.proximidad > EARTH_CIRCUMFERENCE_KM) {
+        throw new HttpException(`La proximidad no puede superar los ${EARTH_CIRCUMFERENCE_KM} km`, HttpStatus.BAD_REQUEST);
+      }
     }
     let filteredProducts = allProducts;
     if (filters.busqueda) {
@@ -102,6 +107,7 @@ export class ProductService {
     return filteredProducts;
   } 
 
+  //crea un producto
   async createProduct(createProductDto: CreateProductDto): Promise<Product> {
     const user = await this.userRepository.findOne({
       where: { id_user: createProductDto.user_id },
@@ -147,6 +153,7 @@ export class ProductService {
     return this.productRepository.save(newProduct);
   }
 
+  //modifica los datos del producto
   async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
     const existingProduct = await this.productRepository.findOne({
       where: { id_product: id },
@@ -210,6 +217,7 @@ export class ProductService {
     return await this.productRepository.save(existingProduct);
   }
 
+  //elimina un producto por su id
   async deleteProduct(id: number): Promise<void> {
     const existingProduct = await this.productRepository.findOne({
       where: { id_product: id },
@@ -220,6 +228,7 @@ export class ProductService {
     await this.productRepository.delete(id);
   }
   
+  //compra un producto
   async buyProduct(productId: number, buyerId: string, sellerId: string): Promise<{ message: string }> {
     const product = await this.productRepository.findOne({
       where: { id_product: productId },
@@ -269,6 +278,7 @@ export class ProductService {
     return { message: 'Compra realizada con exito' };
   }  
 
+  //obtiene los productos de un usuario por su id
   async getYoureProducts(userId: string): Promise<Product[]> {
     const user = await this.userRepository.findOne({
       where : { id_user: userId }
@@ -286,6 +296,7 @@ export class ProductService {
     return products;
   }
 
+  //intercambia un producto por otro
   async swapProduct(productId: number, productSwapedId: number, buyerId: string, sellerId: string): Promise<{ message: string }> {
     const product = await this.productRepository.findOne({
       where: { id_product: productId },
@@ -353,6 +364,7 @@ export class ProductService {
     return { message: 'Intercambio realizado con exito' };
   }
 
+  //obtiene los productos a los que le has dado like
   async getYoureLikedProducts(userID: any): Promise<Product[]> {
     return this.productRepository
       .createQueryBuilder('product')
@@ -369,6 +381,7 @@ export class ProductService {
       .getMany();
   }
 
+  //obtiene los productos que has comprado, vendido o intermcabiado
   async getYoureEnvolventProducts(userID: string): Promise<Product[]> {
     const envolventProducts = await this.productRepository
       .createQueryBuilder('product')

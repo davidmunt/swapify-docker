@@ -11,10 +11,12 @@ export class ProductCategoryService {
     private productCategoryRepository: Repository<ProductCategory>,
   ) {}
 
+  //obtiene las categorias del producto
   async getAllProductCategory(): Promise<ProductCategory[]> {
     return await this.productCategoryRepository.find({ relations: ['products'] });
   }
 
+  //obtiene una categoria
   async getProductCategory(id: number): Promise<ProductCategory> {
     const productCategory = await this.productCategoryRepository.findOne({
       where: { id_category_product: id },
@@ -26,6 +28,7 @@ export class ProductCategoryService {
     return productCategory;
   }
 
+  //crea una categoria
   async createProductCategory(createProductCategoryDto: CreateProductCategoryDto): Promise<ProductCategory> {
     const existingCategory = await this.productCategoryRepository.findOneBy({ name: createProductCategoryDto.name });
     if (existingCategory) {
@@ -35,6 +38,7 @@ export class ProductCategoryService {
     return await this.productCategoryRepository.save(productCategory);
   }
 
+  //modifica una categoria
   async updateProductCategory(id: number, updateProductCategoryDto: UpdateProductCategoryDto): Promise<ProductCategory> {
     const existingProductCategory = await this.productCategoryRepository.findOneBy({ id_category_product: id });
     if (!existingProductCategory) {
@@ -47,6 +51,7 @@ export class ProductCategoryService {
     });
   }
 
+  //elimina una categoria
   async deleteProductCategory(id: number): Promise<{ message: string }> {
     const existingProductCategory = await this.productCategoryRepository.findOneBy({ id_category_product: id });
     if (!existingProductCategory) {

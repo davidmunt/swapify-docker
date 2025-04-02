@@ -15,6 +15,7 @@ export class ProductLikeService {
     private readonly notificationService: NotificationService, 
   ) {}
 
+  //dar like a un producto
   async likeProduct(productId: number, userId: string): Promise<void> {
     const product = await this.productRepository.findOne({
       where: { id_product: productId },
@@ -51,6 +52,7 @@ export class ProductLikeService {
     }
   }
 
+  //quitar like a un producto
   async unlikeProduct(productId: number, userId: string): Promise<void> {
     const like = await this.productLikeRepository.findOne({
       where: { product: { id_product: productId }, user: { id_user: userId } },
